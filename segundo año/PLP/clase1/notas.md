@@ -1,6 +1,6 @@
 # Notas
 - Un paradigma de programación se puede ver como una forma de pensar y ver el mundo, es más arraigado a una forma de programar. Cada paradigma tienes sus primitivas. En la programación funcional las primitivas son las funciones.
-- programación es: el avión está hecho, lo uso.
+- programación es: el avión está hecho, lo uso. 
 implemtación: es como se construye el avión.
 semantica: Lo que explica que el avión vuela.
 - Una función de orden superior indica que una función puede recibir como parametros datos que son funciones en sí y no datos primitivos como str, int, float, etc.
@@ -28,9 +28,10 @@ Esto es más que nada ejercicios.
     aparece char (c:cs) = char == c || aparece char cs
 
 - Notar que también puede ser
-    aparece :: Eq a=> a -> [a] -> Bool
-    aparece c "" = False
-    aparece elem (c:cs) = elem == c || aparece elem cs
+    -
+        aparece :: Eq a=> a -> [a] -> Bool
+        aparece c [] = False
+        aparece elem (c:cs) = elem == c || aparece elem cs
 
 # ordenar
     -- Hace uso de insertion sort. Implementar con Selection
@@ -44,20 +45,21 @@ Esto es más que nada ejercicios.
     insertar_ordenadamente f (y:ys) = if f<y then f:y:ys else y : insertar_ordenadamente f ys
 
 - Notar que también puede ser
-    -- Hace uso de insertion sort. Implementar con Selection
-    ordenar :: Ord a => [a] -> [a]
-    ordenar []     = []
-    ordenar (x:xs) = insertar_ordenadamente x (ordenar xs)
+    -
+        -- Hace uso de insertion sort. Implementar con Selection
+        ordenar :: Ord a => [a] -> [a]
+        ordenar []     = []
+        ordenar (x:xs) = insertar_ordenadamente x (ordenar xs)
 
-    -- pre: la lista de entrada está ordenada de menor a mayor
-    insertar_ordenadamente :: Ord a => a -> [a] -> [a]
-    insertar_ordenadamente f [] = [f]
-    insertar_ordenadamente f (y:ys) = if f<y then f:y:ys else y : insertar_ordenadamente f ys
+        -- pre: la lista de entrada está ordenada de menor a mayor
+        insertar_ordenadamente :: Ord a => a -> [a] -> [a]
+        insertar_ordenadamente f [] = [f]
+        insertar_ordenadamente f (y:ys) = if f<y then f:y:ys else y : insertar_ordenadamente f ys
 
 # Notas
 - programación
 - implementación: como hace la compu para ejecutar sus programas.
-- semántica: explicar lo que hace un programa matematicamente precisa. Darle significado matematicamente preciso a los programas. Un ejemplo son los TADS (acuerdate la tripla de Hoare).
+- semántica: explicar lo que hace un programa de forma matematicamente precisa. Darle significado matematicamente preciso a los programas. Un ejemplo son los TADS (acuerdate la tripla de Hoare).
 - La aplicación tiene mayor precedencia que el cons.
 - (:) se le llama 'cons'
 - Eq se refiere a que lo que le sigue es que se puede comparar. Es una restricción de Type class.
@@ -119,6 +121,7 @@ Esto es más que nada ejercicios.
     -- Bin :: AB a -> a -> AB a -> AB a ||| Este es el tipo que tiene Bin, Haskell lo infiere.
     -- Nil :: AB a
 - ¿Cómo se ve esto?
+    -
         1
        / \      ---->  Bin(Bin Nil 2 Nil) 1 (Bin Nil 3 Nil)
       2   3
@@ -204,7 +207,6 @@ Esto es más que nada ejercicios.
                 | clave < clave' = buscar_en_ABB izq
                 | otherwise = buscar_en_ABB der
 
-    # Tarea: definir buscar del modo que a mi se me ocurre: abb = (Bin izq r der)
 ## Nota:
 - Usamos Maybe a para que las funciones sean totales y que no se indefinan en algún valor.
 

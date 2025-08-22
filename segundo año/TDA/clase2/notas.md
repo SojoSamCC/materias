@@ -10,8 +10,8 @@ La idea de poner cada función de complejidad es que:
 ## Notas
 - El logaritmo en el teorema maestro lo que me dice es el punto de equilibrio.
 - Hay casos que el costo de dividir es infimo.
-- El epcilon el unico rol que cumple es que 
-- O() es que está acotado menor o estricto por abajo, con theta es acotado por abajo. 
+- El epcilon el unico rol que cumple es ajustarme lo suficiente para caer en el caso del teo maestro.
+- O() es que está acotado menor o estricto por abajo, con omega es acotado por abajo. 
 - La ultima condicion del teo maestro habla de cuando la parte de combinar es mas grande que la parte de dividir. 
 - O() costo dividir mas unir es menor que procesamiento.
 - theta costo dividir mas unir es mas o menos igual a procesar.
@@ -23,8 +23,8 @@ La idea de poner cada función de complejidad es que:
 ![alt text](image-1.png)
 
 pregunta 5: 
-    a=2, c=2, en el teo maestro justo da log_2(2)=1, por lo tanto la complejidad queda n^1, y como O(n^1) \in O(n^1) entonces estamos en el caso 2, finalmente la complejidad es 
-        theta(n^1 log n) == theta(n log n) == O(n log n)
+    a=2, c=2, en el teo maestro justo da log_2(2)=1, por lo tanto la complejidad queda n.^1^., y como O(n.^1^.) \in O(n.^1^.) entonces estamos en el caso 2, finalmente la complejidad es 
+        theta(n.^1^. log n) == theta(n log n) == O(n log n)
 ##### Notas
 - theta (n/2) es theta (n). No olvidar eso, igualmente sale razonandolo un poco.
 - Uno calcula el combinar IGNORANDO las llamadas recursivas. Importante.
@@ -109,17 +109,16 @@ Para ayudarme a saber si encontré bien el a y el c. Deben ser 3 y 4 respectivam
 
 # Ayuda
 En la fórmula del teo maestro:
-    mandamos TODO lo recursivo en la:
-        a * T(n/c)
-    y TODO lo demás en:
-        f(n)
-    O sea:
-        a * T(n/c) + f(n)
+1. mandamos TODO lo recursivo en la: a * T(n/c)
+2. mandamos TODO lo demás en: f(n).
 
-        engloba      engloba 
-        todo lo      todo lo
-        recursivo    que no
-                        es recursivo
+O sea
+a * T(n/c) + f(n)
+
+engloba      engloba 
+todo lo      todo lo
+recursivo    que no
+             es recursivo
 - Identificar las tres partes de un algoritmo D&C es fundamental:
     1. Dividir
     2. Conquistar.

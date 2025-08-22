@@ -9,7 +9,7 @@
 f<sub>A(n)</sub>=max<sub>i:|I|=n</sub> T_A(I)
 
 ## Notación O
-    f(n) = Og((n)) si existen c \in R+ y n=0 \in N tales que f(n)<= cg(n) para todo n>= n._0_.
+f(n) = O(g(n)) si existen c ∈ R+ y n._0_. ∈ N tales que f(n)<= cg(n) para todo n>= n<sub>0</sub>
 ## REPASAR
 - Notación theta
 
@@ -28,6 +28,11 @@ La idea de esto es lo que ya te imaginas, tomas un problema y lo vas dividiendo 
 - Se resuelven los problemas más chicos.
 - Se combinan las soluciones.
 
+- Esto se hace vía los siguientes pasos:
+    - Dividir.
+    - Conquistar.
+    - Combinar.
+
 ## Caracteristicas
 - Las subpartes tienen que ser mas pequeñas que la original.
 - Tiene que ser el mismo tipo de tarea.
@@ -38,9 +43,9 @@ La idea de esto es lo que ya te imaginas, tomas un problema y lo vas dividiendo 
 - f(x) es lo que quiero calcular.
     - Si x es suficientemente chico o simple, solucionar de manera ad hoc.
     - Si no,
-        - Dividir a x en x._1_., x._2_., ..., x._k_.
-        - Para todo i<=k, hacer Y._i_. = f(x._i_.)
-        - Combinar los Y._i_. en un Y que es una solución para x.
+        - Dividir a x en x<sub>1</sub>, x<sub>2</sub>, ..., x<sub>k</sub>
+        - Para todo i<=k, hacer Y<sub>i</sub> = f(x<sub>i</sub>)
+        - Combinar los Y<sub>i</sub> en un Y que es una solución para x.
         - Devolver Y.
 
 ## Teorema maestro
@@ -50,7 +55,7 @@ La idea de esto es lo que ya te imaginas, tomas un problema y lo vas dividiendo 
 - Resuelvo el problema con D&C.
 - Como ya sé a, c y d entonces me voy al teorema.
     Ejemplos:
-    - a=4, c=2, d=1: Separar y mezclar es lineal, o sea que f(n) tiene que ser n<sup>1</sup>, entonces como log._2_.(4) es 2, entonces epcilon es 1 y por lo tanto estoy en el primer caso.
+    - a=4, c=2, d=1: Separar y mezclar es lineal, o sea que f(n) tiene que ser n<sup>1</sup>, entonces como log<sub>2</sub>(4) es 2, entonces epcilon es 1 y por lo tanto estoy en el primer caso.
     - a=4, c=2, d=0: **terminar**
 ### Notas
 - n/c es el tamaño de las instancias más chicas, o sea, si tengo un mazo y lo divido en dos, encontes c=2
