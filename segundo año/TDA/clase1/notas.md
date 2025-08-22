@@ -9,7 +9,7 @@
 f<sub>A(n)</sub>=max<sub>i:|I|=n</sub> T_A(I)
 
 ## Notación O
-    f(n) = Og((n)) si existen c \in R+ y n=0 \in N tales que f(n)<= cg(n) para todo n>= n_0
+    f(n) = Og((n)) si existen c \in R+ y n=0 \in N tales que f(n)<= cg(n) para todo n>= n._0_.
 ## REPASAR
 - Notación theta
 
@@ -38,9 +38,9 @@ La idea de esto es lo que ya te imaginas, tomas un problema y lo vas dividiendo 
 - f(x) es lo que quiero calcular.
     - Si x es suficientemente chico o simple, solucionar de manera ad hoc.
     - Si no,
-        - Dividir a x en x_1, x_2, ..., x_k
-        - Para todo i<=k, hacer Y_i = f(x_i)
-        - Combinar los Y_i en un Y que es una solución para x.
+        - Dividir a x en x._1_., x._2_., ..., x._k_.
+        - Para todo i<=k, hacer Y._i_. = f(x._i_.)
+        - Combinar los Y._i_. en un Y que es una solución para x.
         - Devolver Y.
 
 ## Teorema maestro
@@ -50,7 +50,7 @@ La idea de esto es lo que ya te imaginas, tomas un problema y lo vas dividiendo 
 - Resuelvo el problema con D&C.
 - Como ya sé a, c y d entonces me voy al teorema.
     Ejemplos:
-    - a=4, c=2, d=1: Separar y mezclar es lineal, o sea que f(n) tiene que ser n^1, entonces como log_2(4) es 2, entonces epcilon es 1 y por lo tanto estoy en el primer caso.
+    - a=4, c=2, d=1: Separar y mezclar es lineal, o sea que f(n) tiene que ser n<sup>1</sup>, entonces como log._2_.(4) es 2, entonces epcilon es 1 y por lo tanto estoy en el primer caso.
     - a=4, c=2, d=0: **terminar**
 ### Notas
 - n/c es el tamaño de las instancias más chicas, o sea, si tengo un mazo y lo divido en dos, encontes c=2
