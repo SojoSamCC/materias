@@ -131,3 +131,164 @@ def maximaSubsecuencia(array:list[int])->int:
 
 # print(maximaSubsecuencia([3,-1, 4, 8,-2, 2,-7, 5]))
 # print(maximaSubsecuencia([-2, 2,7, 5,3,1, -4, 8]))
+
+def potenciaSum(matriz, exponente:int):
+
+    if exponente == 1:
+        return matriz
+
+    # Divide
+    logaritmo_en_base_dos_exponente:int = exponente // 2
+
+    # Conquer
+    potencia_izquierda = potenciaSum(matriz=matriz, exponente=logaritmo_en_base_dos_exponente)
+
+    # DESCOMENTAR ESTA LINEA E IMPLEMENTAR LAS FUNCIONES QUE FALTAN PARA PODER TESTEAR LA FUNCIÓN producto_de_las_dos_matrices_que_ya_conocia= producto_matricial(potencia_izquierda, potencia(matriz=matriz, exponente=logaritmo_en_base_dos_exponente)
+
+    # Combine
+    # DESCOMENTAR ESTA LINEA E IMPLEMENTAR LAS FUNCIONES QUE FALTAN PARA PODER TESTEAR LA FUNCIÓN return suma_matricial(potencia_izquierda, producto_de_las_dos_matrices_que_ya_conocia))
+
+def distanciaMaxima(arbol, nodo_origen, nodo_destino,  cant_nodos_arbol:int, distancia=0, ir_a_la_izquierda:bool = True, ir_a_la_derecha:bool = True):
+
+    if nodo_origen == nodo_destino:
+        return distancia
+    elif distancia == cant_nodos_arbol-1:
+        return None
+
+    # Divide
+    padre=nodo_origen.padre
+    hijo_izquierdo=nodo_origen.izq
+    hijo_derecho=nodo_origen.der
+
+    # Conquer
+    if ir_a_la_izquierda:
+        if hijo_izquierdo != None:
+            distancia_izquierda = distanciaMaxima(
+                arbol=arbol,
+                nodo_origen=hijo_izquierdo,
+                nodo_destino=nodo_destino,
+                cant_nodos_arbol=cant_nodos_arbol-distancia,
+                distancia=distancia+1,
+                ir_a_la_izquierda=True,
+                ir_a_la_derecha=True,
+                )
+
+            # Combine
+            if distancia_izquierda != None:
+                return distancia_izquierda
+
+    # Conquer
+    if ir_a_la_derecha:
+        if hijo_derecho != None:
+            distancia_derecha = distanciaMaxima(
+                arbol=arbol,
+                nodo_origen=hijo_derecho,
+                nodo_destino=nodo_destino,
+                distancia=distancia+1,
+                cant_nodos_arbol=cant_nodos_arbol-distancia,
+                ir_a_la_izquierda=True,
+                ir_a_la_derecha=True,
+                )
+        
+            # Combine
+            if distancia_derecha != None:
+                return distancia_izquierda
+    
+    # Conquer
+    if padre != None:
+        soy_hijo_izquierdo: bool = padre.izq == nodo_origen
+
+        if soy_hijo_izquierdo:
+            distancia_padre = distanciaMaxima(
+                arbol=arbol,
+                nodo_origen=hijo_derecho,
+                nodo_destino=nodo_destino,
+                distancia=distancia+1,
+                cant_nodos_arbol=cant_nodos_arbol-(distancia+1),
+                ir_a_la_izquierda= False,
+                ir_a_la_derecha= True,
+                )
+        else:
+            distancia_padre = distanciaMaxima(
+                arbol=arbol,
+                nodo_origen=hijo_derecho,
+                nodo_destino=nodo_destino,
+                distancia=distancia+1,
+                cant_nodos_arbol=cant_nodos_arbol-(distancia+1),
+                ir_a_la_izquierda= True,
+                ir_a_la_derecha= False,
+                )
+        
+        # Combine
+        return distancia_padre
+    # Combine
+    return None # Creo que esta línea no es necesaria, pero la dejo por si acaso.
+
+def desordenSort_programacion_dinamica(array: list,  i:int =0, j:int =1, cant_parejas:int =0) -> int:
+
+    el_anterior_era_mayor = array[i] > array[j]
+    if i==0:
+        return 1 if el_anterior_era_mayor else 0
+    
+    if el_anterior_era_mayor:
+        cant_parejas+=1
+    
+    return desordenSort_programacion_dinamica(array=array, i=i+1, j=j+1, cant_parejas=cant_parejas)
+
+def desordenSort(array: list) -> int:
+
+    largo = len(array)
+
+    if largo == 2:
+        el_anterior_era_mayor = array[0] > array[1]
+        return 1 if el_anterior_era_mayor else 0
+    elif largo == 1:
+        return 0 
+    elif largo % 2 != 0:
+        largo-=1
+        cant_parejas_array_con_largo_par=desordenSort(array=array[:largo])
+        if array[largo] > array[largo+1]:
+            cant_parejas_array_con_largo_par+=1
+        return cant_parejas_array_con_largo_par
+    
+    medio: int = len(array) // 2
+
+    parejas_izquierdas:int = desordenSort(array=array[:medio])
+    parejas_derechas:int = desordenSort(array=array[medio:])
+
+    return parejas_izquierdas + parejas_derechas
+
+# print(desordenSort([1,3,2,4,4,1,5,3]))
+
+def cazadorDeFalsos(matriz:list[list[bool]], cuarto:int = None, i:int = 0, j:int = 0)->tuple[int,int]:
+
+    largo = len(matriz)
+
+    # Combine
+    if cuarto == 1:
+        return (i, j)
+    
+    # Divide
+    if cuarto == None:
+        cuarto:int = largo // 2
+    
+    i_0:int = i
+    i_1:int = cuarto-1
+    j_0:int = j
+    j_1:int = j_0+cuarto-1
+
+    # Conquer
+    """
+    Descomentar estas lineas en caso de querer testear
+    """
+    # hay_false:bool = conjuncionSubmatriz(i_0, i_1, j_0, j_1)
+
+    # if hay_false:
+    #     return cazacazadorDeFalsos(matriz=matriz, cuarto=i_1+1, i=i_0, j=j_0)
+    # else:
+    #     if j_0+1 + cuarto >= largo:
+    #         i_0+=cuarto
+    #         j_0-=cuarto
+    #     else:
+    #         j_0+=cuarto
+    #     return cazacazadorDeFalsos(matriz, cuarto=cuarto+1, i=i_0, j=j_0)

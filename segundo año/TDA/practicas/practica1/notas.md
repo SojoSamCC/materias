@@ -87,8 +87,8 @@ En este caso
 $$
 a=1 \land c=\frac{n}{2} \land f(n)=O(n) \implies T(n) = 1*T(\frac{n}{2})+O(n) \\
 . \\
-\text{Por teorema maestro} \\
-. \\
+\text{Por teorema maestro caemos en el segundo caso } \\
+\therefore \\
 T(n) \in O(n*\log{n})
 $$
 
@@ -124,8 +124,8 @@ En este caso:
 $$
 a=1 \land c=2 \land f(n) = O(1) \implies T(n) = 1*T(\frac{n}{2})+O(1) \\
 . \\
-\text{Por teorema maestro} \\
-. \\
+\text{Por teorema maestro caemos en el segundo caso } \\
+\therefore \\
 T(n) \in O(\log{n})
 $$
 
@@ -156,8 +156,8 @@ En este caso:
 $$
 a=1 \land c=2 \land f(n) = O(1) \implies T(n) = 1*T(\frac{n}{2})+O(1) \\
 . \\
-\text{Por teorema maestro} \\
-. \\
+\text{Por teorema maestro caemos en el segundo caso } \\
+\therefore \\
 T(n) \in O(\log{n})
 $$
 
@@ -251,3 +251,229 @@ def maximaSubsecuencia(array:list[int])->int:
     return max(max_parte_izquierda, max_parte_del_medio, max_parte_derecha)
 ```
 > Esta es la función que más me ha costado hasta el momento, un quilombo total.
+
+## Ejercicio 9
+Esto me recuerda a potencia logarítmica, hay que hacer un poco de magia para que las sumas den bien, pero bueno... lo que se me ocurre para resolver esto es hacer algo como que 
+- El caso base es cuando el exponente sea 1 y automaticamente devuelvo A.
+- Si el exponente no es 1 entonces lo que tengo que hacer es devolver la suma de A_1=[matriz que vino del resultado de calcular potenciaSum con matriz con EXP=[exponente que era el logaritmo del exponente de entrada]]+[producto de A_1 con potencia(matriz=A, exponente=EXP)]
+
+```python
+def potenciaSum(matriz, exponente:int):
+
+    if exponente == 1:
+        return matriz
+
+    # Divide
+    logaritmo_en_base_dos_exponente:int = exponente // 2
+
+    # Conquer
+    potencia_izquierda = potenciaSum(matriz=matriz, exponente=logaritmo_en_base_dos_exponente)
+
+    producto_de_las_dos_matrices_que_ya_conocia= producto_matricial(potencia_izquierda, potencia(matriz=matriz, exponente=logaritmo_en_base_dos_exponente)
+
+    # Combine
+    return suma_matricial(potencia_izquierda, producto_de_las_dos_matrices_que_ya_conocia))
+```
+no pide calcular la complejidad, pero como este algoritmo puede parecer que se pasa de la maxima complejidad que te dan, entonces calculemosla a ver (hasta el momento de escrito esto yo también tengo la necesidad de calcularla a ver qué ondis).
+
+$$
+a=1 \land c=2 \ f(n)=O(1) \implies T(n) = 1*T(\frac{n}{2})+O(1) \\
+. \\
+\text{Por teorema maestro caemos en el segundo caso } \\
+\therefore \\
+T(n) \in O(\log{n})
+$$
+
+> $f(n)=O(1)$ porque el tamaño de las matrices **siempre** es 4x4, entonces como es conocido el tamaño de las mismas (y porque hacer suma y producto de matrices no altera la dimensión) podemos decir que computacionalmente la complejidad de todas esas operaciones es O(1).
+
+> $a=1$ porque siempre tomamos el resultado de la suma de las matrices de la izquierda (lo cual es una matriz) y operamos con ella sin que nos importe qué había en las matrices de la derecha (hay que convencerse de esto).
+
+> $c=2$ porque siempre dividimos al exponente entre dos.
+
+## Ejercicio 10
+Puede sonar medio quilombo, acá el detalle es que como no es un ABB entonces la busqueda hay que hacerla por todos los nodos posibles hasta encontrar el buscado. Encuentro que no hay manera de salir de una busqueda en O(n*log(n)) donde n es la cantidad de nodos en el árbol.
+
+```python
+def distanciaMaxima(arbol, nodo_origen, nodo_destino,  cant_nodos_arbol:int, distancia=0, ir_a_la_izquierda:bool = True, ir_a_la_derecha:bool = True):
+
+    if nodo_origen == nodo_destino:
+        return distancia
+    elif distancia == cant_nodos_arbol-1:
+        return None
+
+    # Divide
+    padre=nodo_origen.padre
+    hijo_izquierdo=nodo_origen.izq
+    hijo_derecho=nodo_origen.der
+
+    # Conquer
+    if ir_a_la_izquierda:
+        if hijo_izquierdo != None:
+            distancia_izquierda = distanciaMaxima(
+                arbol=arbol,
+                nodo_origen=hijo_izquierdo,
+                nodo_destino=nodo_destino,
+                cant_nodos_arbol=cant_nodos_arbol-distancia,
+                distancia=distancia+1,
+                ir_a_la_izquierda=True,
+                ir_a_la_derecha=True,
+                )
+
+            # Combine
+            if distancia_izquierda != None:
+                return distancia_izquierda
+
+    # Conquer
+    if ir_a_la_derecha:
+        if hijo_derecho != None:
+            distancia_derecha = distanciaMaxima(
+                arbol=arbol,
+                nodo_origen=hijo_derecho,
+                nodo_destino=nodo_destino,
+                distancia=distancia+1,
+                cant_nodos_arbol=cant_nodos_arbol-distancia,
+                ir_a_la_izquierda=True,
+                ir_a_la_derecha=True,
+                )
+        
+            # Combine
+            if distancia_derecha != None:
+                return distancia_izquierda
+    
+    # Conquer
+    if padre != None:
+        soy_hijo_izquierdo: bool = padre.izq == nodo_origen
+
+        if soy_hijo_izquierdo:
+            distancia_padre = distanciaMaxima(
+                arbol=arbol,
+                nodo_origen=hijo_derecho,
+                nodo_destino=nodo_destino,
+                distancia=distancia+1,
+                cant_nodos_arbol=cant_nodos_arbol-(distancia+1),
+                ir_a_la_izquierda= False,
+                ir_a_la_derecha= True,
+                )
+        else:
+            distancia_padre = distanciaMaxima(
+                arbol=arbol,
+                nodo_origen=hijo_derecho,
+                nodo_destino=nodo_destino,
+                distancia=distancia+1,
+                cant_nodos_arbol=cant_nodos_arbol-(distancia+1),
+                ir_a_la_izquierda= True,
+                ir_a_la_derecha= False,
+                )
+        
+        # Combine
+        return distancia_padre
+    # Combine
+    return None # Creo que esta línea no es necesaria, pero la dejo por si acaso.
+```
+Complejidad en este caso:
+$$
+a=3 \land c=3 \land f(n)=O(1) \implies T(n) = 3*T(\frac{n}{3})+O(1) \\
+. \\
+\text{Por teorema maestro caemos en el segundo caso} \\
+\therefore \\
+T(n) \in O(n*\log{n})
+$$
+
+## Ejercicio 11
+Cuando nos meten esos de los índices en
+$$
+A[1,\dots,n] \\
+. \\
+\text{y que luego dicen que} \\
+. \\
+(\forall \ i,j) \ \  1\leq i < j \leq n \ \ / \ \ A[i] > A[j] 
+$$
+Nos dicen que si tú te paras en la posición j del array, entonces solo te interesan las posiciones i menores a j en el array tales que el valor del array en esa posición i es mayor que el valor del array en la posición j. 
+
+Lo que se me ocurre para resolver esto es hacer una pasada lineal viendo todas las parejas posibles pero sin tener que computar las que ya vimos antes. O sea, me voy moviendo en el array posición por posición y me fijo las parejas posibles, luego cuando avance una posición j en el array, lo que hago es sumar las parejas que habían antes más el valor de la posición j anterior en caso de ser necesario.
+
+Sin embargo hacer una implementación de ese estilo es más una cosa de programación dinámica, voy a hacer las dos.
+
+> Notar que el tamaño del array tiene como precondición ser al menos 2, porque sino no se cumple $i < j$ en $\\(\forall \ i,j) \ \  1\leq i < j \leq n \ \ / \ \ A[i] > A[j]$
+```python
+def desordenSort_programacion_dinamica(array: list,  i:int =0, j:int =1, cant_parejas:int =0) -> int:
+
+    el_anterior_era_mayor = array[i] > array[j]
+    if i==0:
+        return 1 if el_anterior_era_mayor else 0
+    
+    if el_anterior_era_mayor:
+        cant_parejas+=1
+    
+    return desordenSort_programacion_dinamica(array=array, i=i+1, j=j+1, cant_parejas=cant_parejas)
+
+def desordenSort(array: list) -> int:
+
+    largo = len(array)
+
+    if largo == 2:
+        el_anterior_era_mayor = array[0] > array[1]
+        return 1 if el_anterior_era_mayor else 0
+    elif largo == 1:
+        return 0 
+    elif largo % 2 != 0:
+        largo-=1
+        cant_parejas_array_con_largo_par=desordenSort(array=array[:largo])
+        if array[largo] > array[largo+1]:
+            cant_parejas_array_con_largo_par+=1
+        return cant_parejas_array_con_largo_par
+    
+    medio: int = len(array) // 2
+
+    parejas_izquierdas:int = desordenSort(array=array[:medio])
+    parejas_derechas:int = desordenSort(array=array[medio:])
+
+    return parejas_izquierdas + parejas_derechas
+```
+Complejidad en este caso:
+$$
+a=2 \land c=2 \land f(n)=O(n) \implies T(n) = 2*T(\frac{n}{2})+O(1) \\
+. \\
+\text{Por teorema maestro caemos en el segundo caso} \\
+\therefore \\
+T(n) \in O(n*\log{n})
+$$
+
+> f(n) = O(n) porque rearmar al array toma a lo sumo O(n)
+
+## Ejercicio 12
+Este no se ve tan complicado, podemos partir a la matriz en cuadro pedazos porque es cuadrada al ser de $n\times n$ entonces lo que hacemos es hallar con la funcioncita mágica que nos dice en O(1) si hay un false o no.
+
+```python
+def cazadorDeFalsos(matriz:list[list[bool]], cuarto:int = None, i:int = 0, j:int = 0)->tuple[int,int]:
+
+    largo = len(matriz)
+
+    # Combine
+    if cuarto == 1:
+        return (i, j)
+    
+    # Divide
+    if cuarto == None:
+        cuarto:int = largo // 2
+    
+    i_0:int = i
+    i_1:int = cuarto-1
+    j_0:int = j
+    j_1:int = j_0+cuarto-1
+
+    # Conquer
+    hay_false:bool = conjuncionSubmatriz(i_0, i_1, j_0, j_1)
+
+    if hay_false:
+        return cazacazadorDeFalsos(matriz=matriz, cuarto=i_1+1, i=i_0, j=j_0)
+    else:
+        if j_0+1 + cuarto >= largo:
+            i_0+=cuarto
+            j_0-=cuarto
+        else:
+            j_0+=cuarto
+        return cazacazadorDeFalsos(matriz, cuarto=cuarto+1, i=i_0, j=j_0)
+```
+No estoy muy seguro de que esto funcione, pero puede funcionar como esquema en caso de que no funcione.
+
