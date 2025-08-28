@@ -205,11 +205,23 @@ T(n) = ((((T(n-8)+5)+5)+5)+5)+5 \\
 . \\ 
 . \\
 . \\
-T(n) = \sum_{k=1}^{n}{T(n-(k*2))+5} \\.\\ 
+T(n) = \sum_{k=1}^{n}{T(n-(k*2))+5} \\
+.\\ 
 T(n) = 5*\sum_{k=1}^{n}{T(n-(k*2))}
 $$
 > No sé cómo justificar que esto es $n*\log{n}$ sin usar el teorema maestro.
 > Me pasa esto con todos los incisos de este ejercicio. 
+
+> Actualización 27/08/2025: Ya entiendo como pensar esto, es así:
+
+Tengo que pensar que a estos ejercicios como el árbol de recursión, cada parte recursiva puede hacer alguna de las siguientes cosas:
+1. Dividir a los nodos del arbol (lo que hace 'a') en algún tamaño (lo que hace 'c')
+2. No dividir a los nodos del árbol.
+
+Lo que es seguro es que en cada uno de los llamados (aka: nodos del árbol) voy a estar haciendo algo con alguna complejidad (lo que hace 'f(n)'). Entonces hay que analizar qué tamaño tiene el árbol y compararlo con la cantidad de nodos que tiene el mismo junto con la cantidad de veces que se repite la operación de coste f(n).
+
+En el punto 1 de este ejercicio hay que ver que como se resta a n con 2 cada vez, entonces voy a tener una altura de $\frac{n}{2}$ en el arbol (ej: n=10) y voy a tener $\frac{n}{2}$ nodos como en cada uno de esos $\frac{n}{2}$ nodos siempre hago una operación constante (sumar 5) entonces me queda que tengo $5*\frac{n}{2}$ que es igual a $O(n)$
+
 
 ## Ejercicio 8
 Este ejercicio es medio un quilomobo, lo hicimos en clase y la idea es la siguiente:
