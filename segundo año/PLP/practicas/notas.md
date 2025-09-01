@@ -83,13 +83,83 @@ mejorSegun f = foldr1 (\x rec -> if f x rec then x else rec)
 ```haskell
 sumasParciales :: Num a => [a] -> [a]
 sumasParciales lista = foldr (\x rec -> sum (take ((length lista) - (length rec)) lista) : rec) [] lista
+```
+4.
+```haskell
+sumaAlt :: [Int] ->Int
+sumaAlt = foldr (\x rec -> x + ((*(-1)) rec)) 0
+```
+5.
+```haskell
+sumaAlt :: [Int] ->Int
+sumaAlt = (foldr (\x rec -> x + ((*(-1)) rec)) 0) . reverse 
+```
+## Ejercicio 4
+> No tengo ni la menor idea de como hacer ninguno de estos ejercicios
+1.
+```haskell
+permutaciones :: [a] -> [[a]]
+permutaciones lista = concatMap (foldr (\x rec -> take 1 rec : [x] : rec) lista) lista
+```
+No sé cómo hacerlo
+
+2.
+```haskell
+partes :: [a]->[[a]]
+partes = foldr ()
+```
+## Ejercicio 5
+La recursión es estructural unicamente en elementosEnPosicionesPares porque el llamado recursivo solo depende de una lista, que la cola.
+
+```haskell
+elementosEnPosicionesPares :: [a] -> [a]
+elementosEnPosicionesPares lista = fst (foldr (\x (rec,par) -> if par then (x:rec, not par) else (rec, not par)) ([], True) lista)
+```
+## Ejercicio 6
+a.
+```haskell
+sacarUna :: Eq a => a -> [a] -> [a]
+sacarUna e = recr (\x xs rec -> if x == e then xs else x:rec) []
+```
+b. Porque con foldrno me puedo guardar la cola de la lista. 
+```haskell
+insertarOrdenado :: Ord a => a -> [a] -> [a]
+insertarOrdenado e = recr (\x xs rec -> if x>e then e:x:xs else x:rec) []
+```
+## Ejercicio 7
+1.
+```haskell
+mapPares :: ((a,b)->(c,d)) -> [(a,b)] -> [(c,d)]
+mapPares f = foldr (\par rec -> (f (fst par), f (snd par)):rec) []
+```
+2.
+> No se me ocurre como armarla con foldr
+```haskell
+armarPares :: [a]->[b]->[(a,b)]
+```
+3.
+> no se me ocurre como hacerla.
+```haskell
+mapDoble :: (a->b) -> [a] -> [a] -> [b] -- ???? Si no entendí mal el enunciado es esto
+mapDoble f l1 = foldr (\l2 rec -> ) [] - -no sé
+```
+## Ejercicio 8
 
 
-```
+## Ejercicio 9
+1.
+> Está bien????
 ```haskell
-```
-```haskell
-```
-```haskell
-```
+data Nat = Zero | Succ Nat
 
+foldNat :: b -> (a->b->b) -> a -> b
+foldNat cZero cNat x = 
+    case x of
+        Zero -> cZero
+        (Succ n) -> cNat (Succ n) (foldNat cZero cNat n)
+```
+2.
+```haskell
+potencia :: Nat -> Nat
+potencia = foldNat Zero (\nat rec -> ) -- ni idea
+```
