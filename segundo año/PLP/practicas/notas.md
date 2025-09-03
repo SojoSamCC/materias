@@ -121,7 +121,7 @@ a.
 sacarUna :: Eq a => a -> [a] -> [a]
 sacarUna e = recr (\x xs rec -> if x == e then xs else x:rec) []
 ```
-b. Porque con foldrno me puedo guardar la cola de la lista. 
+b. Porque con foldr no me puedo guardar la cola de la lista. 
 ```haskell
 insertarOrdenado :: Ord a => a -> [a] -> [a]
 insertarOrdenado e = recr (\x xs rec -> if x>e then e:x:xs else x:rec) []
@@ -152,11 +152,11 @@ mapDoble f l1 = foldr (\l2 rec -> ) [] - -no sé
 ```haskell
 data Nat = Zero | Succ Nat
 
-foldNat :: b -> (a->b->b) -> a -> b
+foldNat :: (a->b) -> (a->b->b) -> a -> b
 foldNat cZero cNat x = 
     case x of
-        Zero -> cZero
-        (Succ n) -> cNat (Succ n) (foldNat cZero cNat n)
+        Zero -> cZero x
+        (Succ n) -> cNat (Succ n) n
 ```
 2.
 ```haskell
