@@ -147,7 +147,7 @@ mapDoble f l1 = foldr (\l2 rec -> ) [] - -no sé
 
 
 ## Ejercicio 9
-1.
+1. 
 > Está bien????
 ```haskell
 data Nat = Zero | Succ Nat
@@ -158,7 +158,7 @@ foldNat cZero cNat x =
         Zero -> cZero x
         (Succ n) -> cNat (Succ n) n
 ```
-2.
+2. 
 ```haskell
 potencia :: Nat -> Nat
 potencia = foldNat Zero (\nat rec -> ) -- ni idea
