@@ -6,13 +6,24 @@ import (
 	"os"
 )
 
+var cant_llamados int
 var energia []int
 var palabras []string
 var cant_palabras int
-var memo = make(map[string]int)
+var palabras_reverse []string
+var memo [][2]int
 
 const infinito = int(1e18)
 
+func reverse(palabra string) string {
+	runes := []rune(palabra)
+	n := len(runes)
+	// invierto las runes del string
+	for i := 0; i < n/2; i++ {
+		runes[i], runes[n-1-i] = runes[n-1-i], runes[i]
+	}
+	return string(runes) // vuelve a string
+}
 func obtener_entrada() {
 	in := bufio.NewReader(os.Stdin)
 
@@ -32,56 +43,58 @@ func obtener_entrada() {
 
 	// Leer palabras completas
 	palabras = make([]string, n)
+	palabras_reverse = make([]string, n)
 	for i := 0; i < n; i++ {
 		var palabra string
 		fmt.Fscan(in, &palabra)
 		palabras[i] = palabra
+		palabras_reverse[i] = reverse(palabra)
+	}
+
+	memo = make([][2]int, cant_palabras)
+	for i := 0; i < cant_palabras; i++ {
+		memo[i][0] = infinito - 1
+		memo[i][1] = infinito - 1
 	}
 }
+func ordenar(era_reverse int, pos_palabra int, acc int) int {
 
-func reverse(palabra string) string {
-	runes := []rune(palabra)
-	n := len(runes)
-	// invierto las runes del string
-	for i := 0; i < n/2; i++ {
-		runes[i], runes[n-1-i] = runes[n-1-i], runes[i]
-	}
-	return string(runes) // vuelve a string
-}
-func ordenar(pos_palabra int, acc int) int {
-
-	clave := fmt.Sprintf("%d-%d", pos_palabra, pos_palabra-1)
-
-	if valor, existe := memo[clave]; existe {
-		return valor
-	}
-
-	if pos_palabra+1 == cant_palabras {
+	if pos_palabra == cant_palabras {
 		return acc
 	}
 
-	palabra_actual := palabras[pos_palabra]
-	palabra_siguiente := palabras[pos_palabra+1]
-
-	if palabra_actual > palabra_siguiente {
-		if reverse(palabra_actual) > palabra_siguiente {
-			acc = infinito
-		} else {
-			acc = ordenar(pos_palabra+1, acc+energia[pos_palabra])
-		} // no sé cómo manejar el caso donde le hago reverse a una palabra y eso me modifica tod0o lo anterior.
-	} else {
-		acc = ordenar(pos_palabra+1, acc)
+	if memo[pos_palabra][era_reverse] != infinito-1 {
+		return memo[pos_palabra][era_reverse]
 	}
 
-	memo[clave] = acc
+	palabra_actual := palabras[pos_palabra]
 
-	return acc
+	var palabra_anterior string
+	if era_reverse == 1 {
+		palabra_anterior = palabras_reverse[pos_palabra-1]
+	} else {
+		palabra_anterior = palabras[pos_palabra-1]
+	}
+
+	if palabra_anterior <= palabra_actual {
+		if palabra_anterior <= palabras_reverse[pos_palabra] {
+			memo[pos_palabra][era_reverse] = min(ordenar(0, pos_palabra+1, acc), ordenar(1, pos_palabra+1, acc+energia[pos_palabra]))
+		} else {
+			memo[pos_palabra][era_reverse] = ordenar(0, pos_palabra+1, acc)
+		}
+	} else if palabra_anterior <= palabras_reverse[pos_palabra] {
+		memo[pos_palabra][era_reverse] = ordenar(1, pos_palabra+1, acc+energia[pos_palabra])
+	} else {
+		memo[pos_palabra][era_reverse] = infinito
+	}
+
+	return memo[pos_palabra][era_reverse]
 }
 func main() {
 
 	obtener_entrada()
 
-	res := ordenar(1, 0)
+	res := min(ordenar(0, 1, 0), ordenar(1, 1, energia[0]))
 
 	if res == infinito {
 		fmt.Println(-1)
