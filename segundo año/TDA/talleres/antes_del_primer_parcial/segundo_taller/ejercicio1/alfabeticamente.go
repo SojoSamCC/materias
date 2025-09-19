@@ -6,12 +6,11 @@ import (
 	"os"
 )
 
-var cant_llamados int
 var energia []int
+var memo [][2]int
 var palabras []string
 var cant_palabras int
 var palabras_reverse []string
-var memo [][2]int
 
 const infinito = int(1e18)
 
@@ -57,10 +56,10 @@ func obtener_entrada() {
 		memo[i][1] = infinito - 1
 	}
 }
-func ordenar(era_reverse int, pos_palabra int, acc int) int {
+func ordenar(era_reverse int, pos_palabra int) int {
 
 	if pos_palabra == cant_palabras {
-		return acc
+		return 0
 	}
 
 	if memo[pos_palabra][era_reverse] != infinito-1 {
@@ -76,25 +75,33 @@ func ordenar(era_reverse int, pos_palabra int, acc int) int {
 		palabra_anterior = palabras[pos_palabra-1]
 	}
 
+	acc := infinito
+
 	if palabra_anterior <= palabra_actual {
-		if palabra_anterior <= palabras_reverse[pos_palabra] {
-			memo[pos_palabra][era_reverse] = min(ordenar(0, pos_palabra+1, acc), ordenar(1, pos_palabra+1, acc+energia[pos_palabra]))
-		} else {
-			memo[pos_palabra][era_reverse] = ordenar(0, pos_palabra+1, acc)
+		acc_temp := ordenar(0, pos_palabra+1)
+		if acc_temp <= acc {
+			acc = acc_temp
 		}
-	} else if palabra_anterior <= palabras_reverse[pos_palabra] {
-		memo[pos_palabra][era_reverse] = ordenar(1, pos_palabra+1, acc+energia[pos_palabra])
-	} else {
-		memo[pos_palabra][era_reverse] = infinito
 	}
 
-	return memo[pos_palabra][era_reverse]
+	if palabras_reverse[pos_palabra] >= palabra_anterior {
+		acc_temp := ordenar(1, pos_palabra+1)
+
+		acc_temp += energia[pos_palabra]
+		if acc_temp <= acc {
+			acc = acc_temp
+		}
+	}
+
+	memo[pos_palabra][era_reverse] = acc
+
+	return acc
 }
 func main() {
 
 	obtener_entrada()
 
-	res := min(ordenar(0, 1, 0), ordenar(1, 1, energia[0]))
+	res := min(ordenar(0, 1), ordenar(1, 1)+energia[0])
 
 	if res == infinito {
 		fmt.Println(-1)
