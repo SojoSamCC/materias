@@ -6,11 +6,11 @@ import (
 	"os"
 )
 
+var memo [][]int // variable global
 var palabra []byte
 var largo_string int
-var memo [][]int // variable global
 
-const infinito = int(1e18)
+const infinito = int(1e9)
 
 func obtener_entrada() {
 	in := bufio.NewReader(os.Stdin)
@@ -22,101 +22,62 @@ func obtener_entrada() {
 	linea, _ := in.ReadString('\n')
 	linea = linea[:len(linea)-1] // eliminar el salto de línea
 	palabra = []byte(linea)      // convertir string a slice de bytes
-
-	// // Inicializar la matriz global memo de tamaño largo_string x largo_string
-	// memo = make([][]int, largo_string)
-	// for i := range memo {
-	// 	memo[i] = make([]int, largo_string)
-	// 	for j := range memo[i] {
-	// 		memo[i][j] = -1 // asignar -1 a cada posición
-	// 	}
-	// }
+	// hago eso para poder acceder a los Char de la palabra como si fueran una lista de Char
 }
 
-//	func borrar(pos_cambio int, acc int) int {
-//		if memo[pos_cambio] != infinito {
-//			return memo[pos_cambio]
-//		}
-//		if acc >= minimo {
-//			return infinito
-//		}
-//	}
-// func borrar(pos_inicio int, pos_fin int, pos_fin_por_caso int, era_por_caso bool) int {
-
-// 	if era_por_caso {
-// 		if pos_inicio > pos_fin_por_caso {
-// 			return 0
-// 		}
-// 		if palabra[pos_inicio] != palabra[pos_fin] {
-// 			return borrar(pos_inicio, pos_fin+1, pos_fin_por_caso, true)
-// 		}
-// 		// if pos_inicio-pos_fin > 0 {
-// 		// 	acc := borrar(pos_inicio+1, pos_inicio+1, pos_fin_por_caso, true)
-// 		// } else {
-// 		// 	return borrar(pos_inicio, pos_fin+1, pos_fin_por_caso, true)
-// 		// }
-// 	}
-
-// 	if pos_fin > largo_string {
-// 		return 0
-// 	}
-// 	if palabra[pos_inicio] != palabra[pos_fin] {
-// 		return borrar(pos_inicio, pos_fin+1, pos_fin_por_caso+1, false)
-// 	}
-// 	if pos_fin-pos_inicio > 0 {
-// 		acc := borrar(pos_inicio+1, pos_inicio+1, pos_fin_por_caso, true)
-// 		return 1 + acc + borrar(pos_fin+1, pos_fin+1, pos_fin+1, false)
-// 	} else {
-// 		return borrar(pos_inicio, pos_fin+1, pos_fin_por_caso+1, false)
-// 	}
-
-// }
 func borrar() int {
 	// hasta este punto puedo asumir que memo[i][i] siempre va a ser 1 porque eso es la minima cantidad de pasos que hay que hacer para borrar una letra consimo misma.
-	for i := range largo_string {
-		for j := i; j < largo_string; j++ {
-			for k := i + 1; k < j; k++ {
-				// no sé cómo comparar esto. La idea que el se compare cuanto me costó lo del medio.
+
+	for largo_string_parcial := 2; largo_string_parcial <= largo_string; largo_string_parcial++ {
+
+		desde := 0
+		hasta := largo_string_parcial + desde - 1
+		for hasta < largo_string {
+
+			memo[desde][hasta] = 1 + memo[desde+1][hasta]
+
+			desde_intermedio := desde + 1
+			for desde_intermedio <= hasta {
+
+				if palabra[desde_intermedio] == palabra[desde] {
+
+					acc := 0
+
+					if desde_intermedio+1 <= hasta {
+						acc = memo[desde_intermedio+1][hasta]
+					}
+
+					memo[desde][hasta] = min(memo[desde][hasta], memo[desde+1][desde_intermedio]+acc)
+				}
+
+				desde_intermedio += 1
+			}
+
+			desde += 1
+			hasta = largo_string_parcial + desde - 1
+		}
+	}
+
+	return memo[0][largo_string-1]
+}
+
+func main() {
+	obtener_entrada()
+
+	// Aprovecho e inicializo la matriz para memorizar.
+	memo = make([][]int, largo_string)
+	for i := 0; i < largo_string; i++ {
+		memo[i] = make([]int, largo_string)
+		for j := 0; j < largo_string; j++ {
+			if i == j {
+				memo[i][j] = 1
+			} else {
+				memo[i][j] = infinito
 			}
 		}
 	}
-}
-func main() {
-	obtener_entrada()
-	memo = make([][]int, largo_string)
-	for i := range largo_string {
-		memo[i] = make([]int, largo_string)
-	}
-	for i := range largo_string {
-		memo[i][i] = 1
-	}
-	borrar()
 
-	// if largo_string == 1 {
-	// 	fmt.Println(1)
-	// }
+	res := borrar()
 
-	// pos_inicio := 0
-	// posciones_cambio = make([][]int, 0)
-	// largo_posiciones_cambio := 0
-	// for i := 1; i < largo_string; i++ {
-	// 	if palabra[i] != palabra[i-1] {
-	// 		posciones_cambio = append(posciones_cambio, []int{pos_inicio, i - 1})
-	// 		pos_inicio -= pos_inicio
-	// 		pos_inicio += i
-	// 		largo_posiciones_cambio += 1
-	// 	}
-	// }
-
-	// // Agregar el último segmento
-	// posciones_cambio = append(posciones_cambio, []int{pos_inicio, largo_string - 1})
-
-	// memo = make([]int, largo_posiciones_cambio)
-	// for i := 0; i < largo_posiciones_cambio; i++ {
-	// 	memo[i] = infinito
-	// }
-
-	// for i := 0; i < largo_posiciones_cambio; i++ {
-	// 	memo[i] = borrar(i)
-	// }
+	fmt.Println(res)
 }
