@@ -127,8 +127,8 @@ trim = foldr (\x rec -> if x == ' ' then rec else x: ¿xs?) -- imposible porque 
 
 -- Atención porque esta funcion no la entendí el cuatri pasado.
 recr :: (a->[a]->b->b) -> b -> [a] -> b
-recr _ _ z [] = z
-recr f g z (x:xs) = f x xs (recr f z xs)
+recr _ z [] = z
+recr f z (x:xs) = f x xs (recr f z xs)
 
 trim :: String -> String
 trim = recr (\x xs rec -> if x == ' ' then rec else x:xs)
