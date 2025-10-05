@@ -146,9 +146,15 @@ Hay macors para definir listas.
     Esto primero evalua en el primer valor de x e itera por todos los de y, es como un 
     ```
     ```python
+    # En python
+
+    lista = [(x,y,) for x in range(6) for y in range(4) if x+y == 4]
+    
+    # O equivalentemente
+    
     lista=[]
-    for x in range([0..5]):
-        for y in range([0..3]):
+    for x in range(6):
+        for y in range(4):
             if x+y == 4:
                 lista.append((x,y,))
     ```

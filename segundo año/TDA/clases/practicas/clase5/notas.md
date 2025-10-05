@@ -107,6 +107,13 @@ $$
 \sum_{i=0}^{n} \frac{n!}{i!} = n! \sum_{i=0}^{n} \frac{1}{i!}
 $$
 
+Porque cada nivel del árbol tiene $\frac{n!}{(nivel_\ arbol_\ actual)!}$
+
+
+y es tiene orden $\leq O(n!)$
+
+La poda es ir acumulando la suma de la matriz en la posición parcial y en caso de que se pase de la suma que ya tenía guardada, entonces podo esa rama.
+
 ---
 
 Esta formula apareció en el pizarrón y no presté atención cuando la escribieron, buscar lógica.
@@ -114,12 +121,6 @@ Esta formula apareció en el pizarrón y no presté atención cuando la escribie
 $$
 \frac{n!}{k!} = \sum_{i=k+1}^{n} i
 $$
-
-Porque cada nivel del árbol tiene $\frac{n!}{(nivel_\ arbol_\ actual)!}$
-
-y es tiene orden $\leq O(n!)$
-
-La poda es ir acumulando la suma de la matriz en la posición parcial y en caso de que se pase de la suma que ya tenía guardada, entonces podo esa rama.
 
 # Pila Cauta
 
