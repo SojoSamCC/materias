@@ -98,7 +98,7 @@ Lo que dice todo lema de generación es: dado un tipo de dato y una propiedad qu
         Left (y_1*y_2 + z_1*z_2) = Left (y_1*y_2 + z_1*z_2)                                     =   {def conmutatividad}
 ```
 
-## interseccion d (diferencia c d) = vacıo
+## interseccion d (diferencia c d) = vacío
 
 ![alt text](image-6.png)
 
@@ -107,7 +107,7 @@ Lo que dice todo lema de generación es: dado un tipo de dato y una propiedad qu
 
     Por extensionalidad funcional, para demostrar esto basta ver que:
 
-        ∀ x::a. interseccion d (diferencia c d) = vacıo
+        ∀ x::a. interseccion d (diferencia c d) x = vacıo x
 
     Para el lado derecho:
 
@@ -119,7 +119,7 @@ Lo que dice todo lema de generación es: dado un tipo de dato y una propiedad qu
     interseccion d (diferencia c d) x       =                             
     (\e -> d e && (diferencia c d) e) x     =                             {I}
     d x && (diferencia c d) x               =                             {beta}
-    d x && (\e -> c e && not (d e)) x       =                             {beta}
+    d x && (\e -> c e && not (d e)) x       =                             {D}
     d x && c x && not (d x)                 =                             {beta}
     False                                   =                             {propiedad de booleanos}
 ```
@@ -159,7 +159,7 @@ Por extensionalidad funcional basta ver que:
     El caso base se ve comprobado.
 
     Paso inductivo:
-        ∀ xs:: [a]. P(xs) = length1 xs = length2 xs
+                P(xs) = length1 xs = length2 xs
                     HI    = length1 xs = length2 xs (= P(xs))
                     TI    = P(x:xs)
             
@@ -221,7 +221,7 @@ Por extensionalidad funcional basta ver que:
                     Por HI: elem e xs => elem (f e) (map f xs)
                     
                     Por propiedad de Bool:
-                        ∀ x, y, z :: Bool (x => y) => x => z lor y
+                        ∀ x, y, z :: Bool (x => y) => x => z V y
 
                         entonces por HI y propiedad de bool nos queda que
                             elem e xs => f e == f x || elem (f e) (map f xs)
@@ -233,7 +233,7 @@ Por extensionalidad funcional basta ver que:
 > Para poder separar en casos siempre tenemos que hacer uso de una propiedad que nos permita afirmar que estamos haciendo lo correcto... ¿A qué suena? -_-_-_-_-_-_-_-_-> Lemas de generación; o sino alguna propiedad que en principio no es tan trivial y que -si bien nos puede resolver el problema en un paso- hay que demostrarla.
 > Un propiedad que pudimos haber usado era 
 $$
-∀ w,x,y,z : : Bool. (w \implies x \land y \implies) \implies (w \lor y \implies x \lor z)
+∀ w,x,y,z : : Bool. (w \implies x \land y \implies z) \implies (w \lor y \implies x \lor z)
 $$
 
 ## length ys = length (reverse ys) que por reverse es igual a length ys = length (foldl (flip (:)) [] ys)
