@@ -1,210 +1,396 @@
-# Clase preparcial!
+# Clase cálculo lambda - Parte dos
+
+Vamos a extender al cálculo lambda para que tenga tuplas de dos elementos.
+
+Pasos:
+
+1. Tenemos que extender la gramática
+2. Si hace falta extendemos el sistema de tipos.
+
+Tipos: $\sigma,\tau := \sigma \times \tau$
+
+Gramática: 
+```
+M := ... | (M, M) | π_1(M) | π_2(M)
+```
+## Ejercicio macro $\text{curry}_{\sigma,\tau,\delta}$
+
+Definición macro
+```
+curry_σ,τ,δ ≡ λf: σ x τ -> δ. λx: σ. λy: τ. f (x,y)
+```
+Reglas de tipado
+```
+Γ ⊢ M: σ     Γ ⊢ N:τ
+______________________T-Tupla
+Γ ⊢ (M, N): σ x τ
 
 
-# Preguntas para hacer
+Γ ⊢ M: σ x τ
+__________________T-pi1
+Γ ⊢ π_1(M): σ
 
----
+Γ ⊢ M: σ x τ
+__________________
+Γ ⊢ π_2(M): τ
+```
+Conjunto de valores
+```
+V := ... | (V, V)
+```
+Nuevas reglas semánticas
 
-¿Qué sería una regla de reducción en un paso?
-
-![alt text](image.png)
-
-es la (b)
-
----
-
-¿Cuál sería una buena intuición para resolver el d?
-
-![alt text](image-1.png)
+Reglas de congruencia
+```
+    M -> M'
+_____________________T-
+(M, N) -> (M', N)
 
 
-# Ejercicios de parcial
+    N -> N'
+_____________________T-         DEFINIMOS ESTA REGLA ASÍ PORQUE QUEREMOS PRESERVAR DETERMINISMO
+(V, N) -> (V, N')
 
-## Programación funcional
+
+    M -> M'
+_________________
+π_1(M) -> π_1(M')
+
+    M -> M'
+_________________          SE DEFINE ASÍ PORQUE LAS OTRAS DOS DE ARRIBA ME REDUCEN, ESTA ES LA
+π_1(M) -> π_1(M')               QUE HACE EL ÚLTIMO PASO DE REDUCCIÓN.
+
+    M -> M'
+_________________               SE DEFINE ASÍ PORQUE LAS OTRAS DOS DE ARRIBA ME REDUCEN, ESTA ES LA
+π_2(M) -> π_2(M')               QUE HACE EL ÚLTIMO PASO DE REDUCCIÓN.
+```
+Reglas de cómputo
+```
+____________________C-π_1
+π_1((V1, V2)) -> V1
+
+____________________
+π_2((V1, V2)) -> V2
+```
+
+Verificar el siguiente juicio de tipado:
+
+$\empty\vdash\pi _{1}((\lambda x:Nat.(x, True)) 0):Nat$
+```
+τ:Bool
+
+_____________(T-var)    ______________________(T-True)
+x:Nat ⊢ x:Nat           x:Nat ⊢ True : τ
+______________________________________________(T-tupla)
+x:Nat ⊢ (x, True) Nat X τ
+______________________________________________(T-Abs)      ___________(T-zero)
+∅ ⊢ λx: Nat. (x, True): Nat -> Nat X τ                     ∅ ⊢ 0: Nat
+______________________________________________________________________(T-App)
+∅ ⊢ (λx: Nat. (x, True)) 0: Nat X τ
+______________________________________________________________________(T-pi1)
+∅ ⊢ π_1((λx: Nat. (x, True)) 0): Nat
+```
+
+Reducir el siguiente término a un valor:
+
+$\empty\vdash\pi _{1}((\lambda x:Nat.(x, True)) 0):Nat$
+
+```
+π_1((λx: Nat. (x, True)) 0) --> E-pi1, beta
+π_1((0, True)) --> C-π_1
+0 --> es valor
+```
+
+## Extensión con uniones disjuntas
 
 ![alt text](image-2.png)
 
-Una buena estrategia cuando vemos un tipo de datos nuevo es pensar a qué tipo de datos nos hace acordar.
+Ese + es simplemente una anotación de tipo para lo que nosotros definiremos como unión disjunta.
 
-Secuencia recuerda a un árbol binario y Melodia recuerda al RoseTree
+Ejemplo
+```
+Case left_{bool}(0) of left(x) --> isZero(x) [] right (x) --> x 
+```
+
+Reglas de tipado
+```
+Γ ⊢ M : τ 
+______________________T-Left
+Γ ⊢ left_σ(M) : τ + σ
+
+
+Γ ⊢ M : τ 
+______________________T-right
+Γ ⊢ right_σ(M) : σ + τ
+
+
+Γ ⊢ M: σ + τ    Γ, x: σ ⊢ N: δ    Γ, y: τ ⊢ O: δ
+__________________________________________________T-case
+Γ ⊢ case M of left(x) --> N [] right(y) --> O : δ 
+```
+
+Conjunto de valores:
+```
+V:= ... | Left_σ(V) | right_σ(V)
+```
+
+Reglas de semántica:
+
+Reglas de congruencia:
+
+```
+    M -> M'
+_______________________
+left_σ(M) -> left_σ(M')
+
+
+    M -> M'
+_______________________
+right_σ(M) -> right_σ(M')
+
+
+                                    M -> M'
+__________________________________________________________________________________________
+case M of left(x) --> N [] right(y) --> O -> case M' of left(x) --> N [] right(y) --> O 
+
+
+-------------- cómputo
+_______________________________________________________________
+case left_σ(V) of left(x) --> N [] right(y) --> O -> N {x <- V}
+
+
+_______________________________________________________________
+case right_σ(V) of left(x) --> N [] right(y) --> O -> O {y <- V}
+
+```
+
+Este case lo que hace es: dame algo de tipo suma y luego yo me encargo de desarmarlo.
+
+
+## Extensión con árboles binarios
+
+![alt text](image-1.png)
+
+Un ejemplo sería
+
+```
+Nil_{Bool->Bool} --> Nil_{BB}
+
+Bin (Nil_{BB}, λx:Bool. x), Nil_{BB}
+```
+
+Reglas de tipado:
+
+```
+_________________T-Nil
+Γ ⊢ Nil_σ : AB_σ
+
+
+
+Γ ⊢ M1 : AB_σ   Γ ⊢ M2 : AB_σ   Γ ⊢ M3 : AB_σ
+________________________________________________T-Bin
+Γ ⊢ Bin(M1, M2, M3) : AB_σ
+
+
+Γ ⊢ M: AB_σ
+________________
+Γ ⊢ raiz(M) : σ
+
+
+Γ ⊢ M: AB_σ
+________________
+Γ ⊢ der(M) : AB_σ
+
+Γ ⊢ M: AB_σ
+________________
+Γ ⊢ izq(M) : AB_σ
+
+Γ ⊢ M: AB_σ
+________________
+Γ ⊢ esNil(M) : Bool
+```
+
+Conjunto de valores:
+
+```
+V := ... | Nil_σ | Bin_σ(V, V, V)
+```
+
+Reglas de semántica:
+
+```
+    M -> M' 
+_____________________________
+Bin(M, N, O) -> Bin(M', N, O)
+
+
+    N -> N' 
+_____________________________
+Bin(V, N, O) -> Bin(V, N', O)
+
+
+    O -> O' 
+_____________________________
+Bin(V, V, O) -> Bin(V, V, O')
+
+
+    M -> M'
+_____________________
+esNil(M) -> esNil(M')
+
+
+------------- cómputo
+
+____________________
+esNil(Nil_σ) -> True
+
+_______________________________
+esNil(Bin(V1, V2, V3)) -> False
+
+
+
+der(Nil_σ) # es un error. Para resolver esto tenemos dos opciones: o no lo escribimos o 
+
+der(Nil_σ) -> \bottom_{AB_σ}
+
+donde \bottom_{AB_σ} = fix (λx:AB_σ. x)
+
+##################################################
+fix es el punto fijo de una función! 
+
+el punto fijo es dada una función y un valor, si aplicamos ese valor como argumento a la función, entonces esta me devuelve ese mismo argumento.
+
+ejemplo: 
+
+f(x) = 1 --> Acá x=1 es el punto fijo.
+f(x) = x + 1 --> Acá x=vacío.
+f(x) = x --> Acá se vale toda x.
+
+Algo así como el valor de x que hace que la función se comporte como la identidad.
+
+en este caso fix se define como indeterminado si hay 0 o más de un punto fijo.
+##################################################
+
+
+Terminar las demás...
+```
+
+## Otra forma de proyectar/observar
+
+![alt text](image.png)
+
+La única anotacion es σ y la sabemos del Nil.
+
+Los subtérminos son M, N, O
+
+modificación de reglas de tipado:
+
+```
+
+Γ ⊢ M: AB_σ     Γ ⊢ N: τ    Γ, i:AB_σ, r: σ, d: AB_σ ⊢ O: τ
+____________________________________________________________
+Γ ⊢ case M of Nil ~> N [] Bin(i, r, d) ~> O: AB_σ -> τ
+
+Usamos τ porque en principio no tienen por qué devolver el mismo tipo! Por ejemplo: el AB puede ser de funciones lambda que me devuelven un Bool al ser reducidas!!!
+```
+
+No se modifican el conjunto de valores.
+
+Reglas de semántica, vamos a tener una por cada subtérmino!
+
+```
+Las mismas 3 del Bin
+
+    M -> M'
+____________________________________________________________________________________E-case
+case M of Nil ~> N [] Bin(i, r, d) ~> O ~> case M' of Nil ~> N [] Bin(i, r, d) ~> O
+
+
+---------- cómputo
+
+__________________________________________________
+case Nil_σ of Nil ~> N [] Bin(i, r, d) ~> O ~> N
+
+
+__________________________________________________________________________C-Case
+case Bin(V1, V2, V3) of Nil ~> N [] Bin(i, r, d) ~> O{i:=V1, r:=V2, d:=V3} 
+```
+
 
 ![alt text](image-3.png)
 
-a) 
+Ejercicio:
+```
+case if (λx : Bool.x) True then Bin(Nil_Nat, 1, Nil_Nat) else Nil_Nat of Nil ~> False ; Bin(i,r, d) ~> iszero(r) --> E-case, E-IF, Beta
 
-```haskell
-type Tono = Integer
+case if True then Bin(Nil_Nat, 1, Nil_Nat) else Nil_Nat of Nil ~> False ; Bin(i,r, d) ~> iszero(r) --> E-case, E-If-True
 
-data Melodia = Silencio | Nota Tono | Secuencia Melodia Melodia | Paralelo [Melodia]
+case Bin(Nil_Nat, 1, Nil_Nat) of Nil ~> False ; Bin(i,r, d) ~> iszero(r) --> E-case, E-If-True --> C-Case
 
-foldMelodia :: b -> (Tono -> b) -> (b -> b -> b) -> ([b] -> b) -> Melodia -> b
-foldMelodia fsil ftono fsec fpara melodia = case melodia of
-    Silencio        -> Silencio
-    Nota t          -> ftono t
-    Secuencia m1 m2 -> fsec (rec m1) (rec m2)
-    Paralelo ms     -> fpara (map rec ms) -- hay que hacer un map porque fpara 
-                                          -- solo resuelve para una lista, no para
-                                          -- un b o un Tono suelto.
-        where rec = foldMelodia fsil ftono fsec fpara
+iszero(1) --> E-isZeroSucc
+
+False --> es una forma normal que en particular es un valor porque se encuentra definido en nuestro conjunto de valores.
 ```
 
-b)
+```
+esNil_σ = (λx: AB_σ. case x of Nil_σ ~> True [] Bin(i, r, d) ~> False)
 
-```haskell
-duracionTotal :: Melodia -> Integer
-duracionTotal = foldMelodia 1 (const 1) (+) (maximum)
-
--- Es suma porque queremos la suma de los tiempos de cada secuencia.
--- Es maximum porque mapeamos la recursión a cada elemento de la lista y siempre vamos a caer en algún caso de los constructores, finalmente nos va a quedar un numerito en cada posición de la lista y queremos el maximo de esos porque todas las melodías suenan al mismo tiempo ;).
+raiz_σ = (λx: AB_σ. case x of Nil_σ ~> \bottom_σ [] Bin(i, r, d) ~> r)
 ```
 
-c)
+Ojo que el Map este sí es recursivo!
+```
+M, N, O := ... | map(F, M)
+```
+No me modifica el conjunto de valores porque al aplicar map o caigo en un árbol que va a ser de un tipo válido. Siempre caigo en un árbol y yo ya tenía definido a los árboles para todo tipo.
 
-```haskell
--- Ejemplos:
-
--- truncar Silencio 1 ~> Silencio
--- truncar Silencio 3 ~> Silencio
--- truncar (Nota 3) 3 ~> Nota 3
--- truncar (Secuencia (Nota 1) Silencio) 1 ~> Nota 1
--- truncar (Secuencia (Secuencia Silencio Silencio) (Secuencia Silencio Silencio)) 3 ~> Secuencia (Secuencia Silencio Silencio) Silencio
--- truncar (Secuencia (Secuencia Silencio Silencio) (Secuencia Silencio Silencio)) 1 ~> Silencio
--- truncar (Secuencia (Secuencia Silencio Silencio) (Secuencia (Nota 1) Silencio)) 1 ~> Nota 1
-
--- Truncar un paralelo significa truncar cada una de las melodias en la lista de melodias.
-
-truncar :: Melodia -> Integer -> Melodia
-truncar = foldMelodia (const Silencio) (\nota _ -> const nota) -- casos base
-                      (\f1 f2 n -> 
-                        let m1 = f1 n
-                            duracionRestante = n - duracionTotal m1
-                        in if duracionRestante > 0 
-                            then Secuencia m1 (f2 duracionRestante)
-                            else m1)
-                      (\fs n -> Paralelo (map ($ n) fs))
-
--- Es (const Silencio) porque truncar recibe un n que es el Integer!
--- es f1 y f2 porque los casos base me devuelven funciones que esperan un n!
--- Aplicar f1 n lo que hace es cortar la primera mitad de la Secuencia.
--- es map ($ n) fs porque mapeamos la aplicación del n que esperan todas las funciones. O sea, eso aplica n a todas las funciones de fs.
--- fs es una lista de evaluaciones parciales.
--- El let es com un where pero que nos permite escribir primero los reemplazos.
-
-equivalentes al caso Paralelo
-
-(\fs n -> Paralelo (\rec n -> rec n) fs)
-(\fs n -> Paralelo [rec n | rec <- fs])
+Regla de tipado
+```
+Γ ⊢ F: σ -> τ   Γ ⊢ M: AB_σ
+_____________________________
+Γ ⊢ map(F, M): AB_τ
 ```
 
-```haskell
-recMelodia :: b -> (Tono -> b) -> (Melodia -> Melodia -> b -> b) -> ([Melodia] -> [b] -> b) -> Melodia -> b
-recMelodia fsil fnota fsec fpara melodia = case melodia of
-    Silencio        -> fsil Silencio
-    Nota t          -> fnota t
-    Secuencia m1 m2 -> fsec m1 m2 (rec m1) (rec m2)
-    Paralelo ms     -> fpara ms (map rec ms)
-
-    where rec = recMelodia fsil fnota fsec fpara
+Regla de congruencia: dos porque hay dos subtérminos
 ```
-
-## Razonamiento ecuacional e Inducción Estructural
-
-![alt text](image-4.png)
-![alt text](image-6.png)
-
-$\forall$
-```
-Paso 1: predicado unario
-
-P(t):=  ∀ u :: AB a. altura t >= altura (zipAB t u)
-```
-```
-Caso Base:
-
-    P(Nil) :=
-        ∀ u :: AB a. altura Nil >= altura (zipAB Nil u)
-
-                    altura Nil >= altura (zipAB Nil u) 
-                    0 >= altura (zipAB Nil u)               {A0}
-                    0 >= altura (const Nil u)               {Z0}
-                    0 >= altura ((\x -> \y -> x) Nil u)     {const}
-                    0 >= altura ((\y -> Nil) u)             {beta}
-                    0 >= altura (Nil)                       {beta}
-                    0 >= 0                                  {A0}
-                    True                                    {Propiedad de enteros}
-```
-```
-Paso inductivo:
-
-    Sean ∀ i :: AB a. ∀ d :: AB a. ∀ r :: a. Quiero ver que (P(i) ∧ P(d) => P(Bin i r d))
-                                                            ____________    _____________
-                                                                HI              TI
+    F -> F'
+_______________________
+map(F, M) -> map(F', M)
 
 
-    HI_1: P(i) = ∀ u_1 :: AB a. altura i >= altura (zipAB i u_1)
-    HI_2: P(d) = ∀ u_2 :: AB a. altura d >= altura (zipAB d u_2)
-
-
-    altura (Bin i r d)      >= altura (zipAB (Bin i r d) u)
-    1 + max altura i altura d >= altura (zipAB (Bin i r d) u)                                                     {A1}
-
-    1 + max altura i altura d >= altura ((\t -> case t of                                                     |
-                                            Nil             ->   Nil                                          |   {Z1}   
-                                            Bin i' r' d'    ->   Bin (zipAB i i’) (r,r’) (zipAB d d’)         |
-                                      ) u )                                                                   |
-                                      ______________________________________________________________________
-                                                    macro
-
-    1 + max altura i altura d >= altura (case u of                                                            |
-                                        Nil -> Nil                                                            |   {beta}
-                                        Bin i' r' d' -> macro                                                 |
-                                        )                                                                     |
-
-    Por lema de generación de árboles binarios, entonces u = Nil o u = Bin i' r' d'
-
-    Caso u = Nil:
-        1 + max altura i altura d >= altura (case Nil of                                                            |
-                                            Nil -> Nil                                                              |
-                                            Bin i' r' d' -> macro                                                   |
-                                          )
-
-        1 + max altura i altura d >= altura Nil                                                                      por case 
-        1 + max altura i altura d >= 0                                                                               {A0}
-        altura (Bin i r d) >= 0                                                                                      {A1}
-        True                                                                                                         {LEMA} 
+    M -> M'
+_______________________
+map(V, M) -> map(V, M)
 
 ```
 
-## Deducción natural
-
-![alt text](image-5.png)
+Reglas de cómputo:
 
 ```
-                                                                 __________________________________ax
-                                                                    R, (q V (p => t)) ⊢ p
-____________________________ax   _________________________ax     __________________________________Vi2
-R ⊢ q V (p => t)                  R, (q V p) ⊢ (q V p)            R, (q V (p => t)) ⊢ q V p
-____________________________Vi2  _________________________Vi1     __________________________________Vi1
-R ⊢ (q V p) V (q V (p => t))      R, (q V p) ⊢ (q V p) V t          R, (q V (p => t)) ⊢ (q V p) V t
-____________________________________________________________________________________________________Ve
-        |                                   
-        |
-        |                   ________________ax  ________________ax  _________________ax
-        |                   R, q V p ⊢ q V p    R, q V p, q ⊢ q     R, q V p, p ⊢ p
-        |                   _________________________________________________________Ve
-        |                   R, q V p ⊢ q                        
-________________**          ________________Vi1    ______________Vi2
-R ⊢ (q V p) V t             R, q V p ⊢ q V t        R, t ⊢ q V t
-____________________________________________________________________________________________Ve
-R = {p, (q V (p => t))} ⊢ q V t 
-____________________________________________________________________________________________=>i
-p ⊢ (q V (p => t)) => (q V t)
-____________________________________________________________________________________________=>i
-p => (q V (p => t)) => (q V t)
+    ∅ ⊢ V: σ -> τ
+_________________________
+map(V, Nil_σ) -> Nil_τ 
 
 
-otro Ve que podíamos tomar era R ⊢ q V (p => t) y salía más corto
+____________________________________________________________ ~~~~> Esto es recursión.
+map(V, Bin(V1, V2, V3)) -> Bin(map(V, V1), V V2, map(V, V3))
+
 ```
-> CONSEJO: Si llegamos a tener una disyunción en el contexto entonces tal vez nos conviene hacer eliminación del V (Ve) con esa disyunción (que luego la vamos a poder probar trivalmente) y luego como la vamos a partir y meter en el contexto entonces eso puede ayudarnos.
+Le metemos esa "premisa" a la regla porque sino no estamos aclarando de dónde sale el τ. Es importante recordar que las reglas de cómputo **pueden** tener esas "premisas", lo único que no tienen las reglas de cómputo son pasos de reducción. Igualmente recordemos que si lelgamos a una regla de cómputo es porque todo tipó antes.
+
+Metemos el map en V1 y V2 porque V1 y V2 son los subárboles disponibles.
 
 
+# Notas
+- Cuando agregamos alguna estructura nueva generalmente es útil agregar también algún tipo de observador para poder realizar alguna operación muy fundamental con la estructura.
+- La gracia de la macro es que no modifiquemos el sistemas que estamos modelando, solamente usarla como un reemplazo sintáctico.
+- Conviene agregar una regla de tipado por cada nuevo contructor agregado, puede haber algún caso patológico en donde debamos agregar más reglas de tipado.
+- Que esté en forma normal significa que no puedo aplicar ninguna regla de reducción.
+- Diferencia entre valor y error: Ambos son formas normales PERO los errores no pertenecen al conjunto de valores definido.
+- Las reglas de semántica son: una parte las reglas que me definen qué hacer con los valores (de cómputo), las reglas que me reducen expresiones (de congruencia).
+- Un subtérmino es un término dentro de otro término. Ejemplo: Left_sigma(M), ahí M es subtérmino de tipo sigma.
+- Nos pueden llegar a pedir en el parcial que modifiquemos algo en un cálculo lambda para que no lelguen a errores.
+- Podemos pensar que si tenemos una especie de if o case y alguna rama tiene un bottom, entonces nuestro programa puede llegar a un valor si no cae en esa rama, que haya un bottom en una rama no implica que el programa sea bottom.
+- Solo podemos usar una regla de cómputo por aplicación de reglas.
+- No podemos llamar a una macro en la definición de otra macro.
+- En el parcial puede haber alguna versión con recursión.

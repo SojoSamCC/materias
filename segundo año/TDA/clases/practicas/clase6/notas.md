@@ -1,183 +1,245 @@
-# clase Recorridos sobre grafos
+# Representación de grafos y demos en grafos
 
-# Notas
-- Es importante saber y recordar siempre en la carrera el concepto de un árbol.
-
-# DFS
+Un grafo es una estructura que se compone de nodos y aristas y que nos permiten modelar una gran cantidad de problemas.
 
 ![alt text](image.png)
 
-[AGREGAR DIAPOS DEL EJEMPLO DE DFS]
+Conviene elegir una representación que sea lo más adecuada posible según diferentes factores como
+
+1. Cantidad de nodos.
+2. Cantidad de aristas.
+
+Lo podemos representar con matriz de adyacencia, lista enlazada o lista de adyacencia.
+
+En general si:
+
+```
+cantidad de nodos >> cantidad de aristas --> conviene más lista de adyacencia.
+cantidad de nodos << cantidad de aristas --> conviene más la matriz de adyacencia.
+La peor suele ser: lista de aristas.
+```
 
 ![alt text](image-1.png)
-
-# Propiedades (?
-
-- Se usa una pila para DFS.
-- El invariante de DFS es: parentización. Leer del Cormen.
-- Me dice la distancia de un nodo a la raíz (o nodo desde donde se comenzó a ejecutar DFS).
-- Me da las tree-edges.
-
-# BFS
-
 ![alt text](image-2.png)
 
+El vecindario de un nodo es un conjunto de vértices, no un grafo.
+
+# Matriz de adyacencia
+
+Es una matriz cuadrada donde hay un 1 si dos nodos están conectados, y un cero sino.
+
 ![alt text](image-3.png)
-
-# Propiedades (?
-
-- Se usa una cola para BFS.
-- El invariante BFS es: para todo nodo en la cola del BFS, entonces todos los nodos están a la misma distancia de la raíz con una diferencia de máximo 1. Leer del Cormen.
-- BFS no me da todos los caminos mínimos directamente.
-- BFS me da la distancia mínima a la raíz para cada nodo.
-
-# Ejercicios
-
 ![alt text](image-4.png)
-![alt text](image-5.png)
 
+![alt text](image-5.png)
 ![alt text](image-6.png)
 ![alt text](image-7.png)
 
-# Ejercicio 2
+# Lista de adyacencia
 
 ![alt text](image-8.png)
 ![alt text](image-9.png)
 
-# Ejercicio 3
+Si no usamos un hash map para representar a la lista de adyacencia entonces suele estar implementado como un arreglo de listas enlazadas.
 
 ![alt text](image-10.png)
+
 ![alt text](image-11.png)
 
-```
-Lo que se me ocurre es que el grafo tiene dos nodos distinguidos. La casa de Rasta y la fábrica de alfajores. Cada nodo es una cuadra distinta, y cada arista entre dos nodos es la calle que una a ambas esquinas.
-```
+El orden de recorrer el vecindario de un nodo v es O(N(v))
 
 ![alt text](image-12.png)
-![alt text](image-14.png)
+
+Si hicieramos la implementación de la lista de adyacencia con un array de AVL, eso empeora algunas complejidades pero mejora otras. Todo depende del caso de uso.
+
 ![alt text](image-13.png)
 
-![alt text](image-15.png)
-![alt text](image-16.png)
+Si lo devuelvo por copia es orden del tamaño del vecindario.
 
-# Ejercicio 4
+Esta implementación es la más fácil. Pero también se usa un vector de vez en cuando (un vector es un array redimensionable).
 
-![alt text](image-17.png)
-![alt text](image-18.png)
+Un hack para borrar un elemento de una lista de adyacencia es recordar primero que como lo que nos importa es el **conjunto** de vecinos, entonces si quiero eliminar un vecino, entonces lo que hago es swapear al que quiero eliminar con el último y me olvido del último. Aunque depende también del problema que tenga.
 
-```
-Nos armamos un grafito que en principio separa en dos partes a los canales, de un lado los de un canal y de otro lado los de otro canal. Cada streamer es un nodo y existe una arista entre dos streamers sii hay un conflicto entre ellos.
+# Grafos implícitos
 
-ES posible armar un grafo que cumpla lo pedido si nunguna arista c se encuentra dentro de un mismo lado del grafo. 
+Esto está cheto! Es como ver el árbol de backtracking! Nunca lo almacenaste ni lo viste, pero sí que lo utilizaste para resolver el problema.
 
-Ejemplo:
+![alt text](image-14.png)  
 
-Canal 1                 Canal 2
-S1 ----------------------- S5
-S2 ----------------------- S6
-S3 ----------------------- S7
-S4 ----------------------- S8
+En general todo problema que represente a algun tablero con casillas por las cuales me puedo mover es un grafo donde cada nodo es una casilla y hay una arista segun las casillas a las cuales me puedo mover.
 
-Aquí lo que digo es que los del Canal 1 no están peleados entre sí porque no hay ninguna arista que los conecte (análogo para el canal 2) y solo hay aristas entre canal 1 y canal 2 si existe un conflicto entre esos dos streamers.
-```
+# Demos en Grafos
 
-![alt text](image-19.png)
-![alt text](image-20.png)
+Aclaración: hay un handout de cómo se escribe todo lo que sigue pero formalmente.
 
-![alt text](image-21.png)
-![alt text](image-22.png)
-![alt text](image-23.png)
+## Ejercicio
 
-Para chequear que un grafo sea bipartito se puede usar dfs y verificar que los nodos pares solo tengan conexión con los impares, y que los impares solo tengan conexión con los pares.
+Probar que en todo grupo de dos o más personas hay por lo menos dos de ellas que tienen la misma cantidad de amigos en el grupo.
 
-![alt text](image-24.png)
-![alt text](image-25.png)
+Lo modelamos como un grafo donde cada persona es un nodo y cad arista entre dos nodos representa la amistad entre esas dos personas. La cantidad de amigos de una persona es el vecindario del nodo que representa a esa persona.
 
-```
-Explicado en palabras VÁLIDO PARA EL PARCIAL:
+$\implies$
 
-me armo el grafo y corro BFS para obtener todas las distancias. Le meto módulo 2 a todas las distancias. Me fijo que todos los vecinos tengan diferente paridad.
-```
+Queremos demostrar que
+$$
+\forall \ G \ /\ |V(G)|\ =\ 2 \implies \exists \ u,\ v \in V(G) /\ d_{G}(u) = d_{G}(v)
+$$
 
-# Ejercicio 5
+Idea:
 
-![alt text](image-26.png)
-![alt text](image-27.png)
+Ssabemos que $v\in V(G)$ y sabemos que $0\leq d(v)\leq n-1$
 
-a)
+Armemos un grafo donde un nodo no tengo a ningún amigo y hasta el nodo n-1 ese tiene a todos los amigos. O sea, el nodo 0 tiene 0 amigos, el 1 tiene 1 amigo, ...
 
-![alt text](image-28.png)
+Si
+$$
+\exists u \in V(G) / d_{G}(u) = 0 \implies \not \exists v\in V(G)/ d_{G}(V)=n-1 \\
 
-```
-Si vw no es puente G-{vw} es conexo => hay un camino P que conecta a vw.
-```
+\text{y viceversa (el viceversa va a ser el caso 2)} \\
 
-![alt text](image-29.png)
+\text{Por lo tanto se cumple}
+$$
 
-b)
-```
-Lo que se me ocurre es ir recorriendo el grafo con DFS y me voy guardando los nodos por los que ya pasé. En caso de que consigo una arista que me conecte un nodo con otro que ya visité, entonces encontré una backedge y por lo tanto esa arista NO es puente, caso contrario, sí es puente.
-```
-```python
-"""
-pseudocódigo que se me ocurre
-"""
+(El viceversa no es un sí y solo sí, sino que es "la misma idea pero al revés".)
 
-grafo = grafo de entrada 
-aristas = dfs(grafo)
+1. 0 <= d(v) <= n-2
+2. 1 <= d(v) <= n-1
 
-cant_aristas_puente = 0
-conjunto_nodos_visitados = set()
-for arista in aristas:
-    nodo_1 = arista[0]
-    if nodo_1 in conjunto_nodos:
-        continue
-    else:
-        conjunto_nodos_visitados.add(nodo_1)
-        cant_aristas +=1
+En el caso (1) hay n-1 valores /= posibles para d_G(v) y n nodos => E dos nodos (o más) con igual valor d_G(v)
 
-print(cant_aristas_puente)
-```
-No es así exactamente
-
-Seguimos...
-
-![alt text](image-30.png)
-
-```python
-def dfs(v, p=1):
-    estado[v] = gris
-    for (u in vecinos[v]):
-        estado[v] = blanco
-        dfs(u)
-    
-    estado[v] = negro
-```
-
-![alt text](image-31.png)
-
-Hay que demostrarlo.
-
-![alt text](image-32.png)
-![alt text](image-33.png)
-
-![alt text](image-34.png)
-
-# Ejercicio Luces
-
-![alt text](image-35.png)
-
-```
-Se me ocurre para el modelado que cada habitacion es un nodo y que existe una arista entre dos habitaciones sii existe un interruptor en una que me enciende una luz de la otra.
-```
-```
-Se me ocurre que para resolverlo no puedo usar aristas que me conecten nodos que estén a más de 1 de distancia y que debemos seguir cualquier arista que me conecte inmediatamente con el nodo anterior. O sea, si hay una arista entre dos nodos y la distancia entre ellos es 1, entonces seguro que me sirve.
-```
+Ídem caso (2)
 
 
+A esto se le llama demostración directa (es como inducción). Partimos desde un grafo cualquiera y me voy agarrando de las propiedades y en algún momento se me parte por casos mi problema y luego demuestro que en mis casos posibles, entonces eso demuestra que se cumple la propiedad para todo grafo.
 
-# Nota
+## Ejercicio
 
-- Lo mejor que podemos hacer es no modificar los algoritmos de recorridos sobre grafos. Lo que hay que hacer es modelar muy bien el problema con un grafo y luego aplicar al algoritmo de recorrido. No es conveniente modificar un algoritmo porque hay que demostrar que el mismo es correcto y es una tarea complicada. Lo que podemos hacer es aprovecharnos de las propiedades de la implementación del algoritmo!
-- Si el grafo es no dirigido, entonces no hay ni forward ni cross edge.
+Sean P y Q dos caminos distintos de un grafo G que unen un vértice v con otro w. Demostrar en forma directa que G tiene un ciclo cuyas aristas pertenecen a P o Q.
 
+Idea:
+
+Existe un camino $P= \{p_1, p_2, ..., p_k\}$ y uno $Q=\{q_1, q_2, ..., q_n\}$ donde cada par (i, i-1) ocurra que hay una arista en el grafo (sino no tendría sentido trivialmente).
+
+> Lo que queremos es usar las propiedades para poder modelarlo para todos los caminos posibles de todo grafo.
+
+$\forall \ 2\leq i\leq min(n,k)$
+
+Como $P \neq Q \land p_1 = q_1  = v$, debe existir un i tal que p_j = q_j $\forall j<i \land p_i \neq q_i$
+
+(Hasta el nodo i-1 los caminos son iguales, y en el nodo i se separan.)
+
+Como $p_k = w = q_n$, P y Q se tienen que volver a unir (necesariamente).
+
+Quiero el punto donde se vuelven a unit por 1era vez después de separarse.
+
+Sea $p_l = q_e$ ese punto de reencuentro. 
+
+Se cumple que
+
+$p_j \not\in Q, \ i\leq j\leq j-1$
+$q_j \not\in P, \ i\leq j\leq e-1$
+
+(O sea, que los caminos son diferentes en todo punto anterior a $p_l$, recordar que $p_l = q_e$)
+
+Luego 
+
+$c_1 = p_{i-1}, p_i, ..., p_{l-1}, p_l$
+$c_2 = q_{i-1}, q_i, ..., q_{e-1}, q_e$
+
+Son dos caminos que unen $q_{i-1} = p_{i-1}$ con $p_l = q_e$ sin otro nodo en común.
+
+Por lo que:
+
+$p_{i-1}, p_i,\ \dots, p_l == q_e , q_e-1, \ \dots, q_i, q_{i-1} == p_{i-1}$
+
+que es un ciclo donde todo nodo está en P o Q
+
+$\square$
+
+Atención: alguien en la clase se le ocurrión un contraejemplo para esta demo: aquí está el dibujo
+
+[insertar dibujo]
+
+Lo que está mal es la línea
+
+$q_j \not\in P, \ i\leq j\leq e-1$
+
+Hay que leer el handout porque ahí sí está correcta la demo.
+
+La idea importante es que cada subcamino donde se separan no comparten nada.
+
+$p_j \neq q_j , \text{si } j\leq j\leq l-1 \land i\leq j\leq e-1, p_l = q_e$
+
+hay un tramito entre la ultima vez que son iguales y la primera vez que se unen. Entonces cuando tomo un indice para P que está en ese tramo, entonces cualquiera de esos índices no los puedo matchear con ninguno de Q.
+
+
+El problemita de lo anterior era por el uso de los índices. Podemos usar algunas palabras al momento de explicar esto.
+
+## Ejercicio
+
+Todo $G_n (n\geq 2)$ conexo tiene al menos dos vértices distintos $v_1, v_2$ tal que $G \\ \{v_!\}$ y $G \\ v_2$ son conexos
+
+> Recordar qeu si un grafo G no es conexo, entonces tiene al menos 2 componentes conexas.
+
+> Vamos a usar inducción en |V(G)| = n
+
+[en la diapo está el caso base]
+
+$P(n): $ Si un grafo $G_n (n \geq 2)$ es conexo, entonces $\exists v_1 \neq v_2 \in V(G)$ **completar**
+
+La hipótesis inductva es:
+
+$\exists v_1, v_2 / G_i - \{v_1\} \land G_i - \{v_2\}$ son conexos.
+
+En el handout no está el siguiente comentario:
+
+Proposición: existe dos vértices tales que si yo saco ó uno u el otro, entonces siempre me queda conexo.
+
+Si saco los dos de una compoenente conexa, entonces ya demostramos que funciona.
+
+Si están en dos componentes conexas distintas: entonces me paro en un vértice y luego me conecto con un vértice que estaba dentro de esa misma componente conexa y luego me voy a v y luego de v me voy a la otra compoenente conexa siguiente potencialmente la misma estrategia.
+
+Supongamos que yo tengo dos compoenentes conexas: una es C_i y C_j, y v es el nodo que me uno ambas componentes conexas.
+
+## Ejercicio
+
+La suma de los grados de todos los vértices es igual al doble de la cantidad de aristas. Es decir, $\sum_{v \in V(G)}d(v) = 2 |E(G)|$
+
+Hacemos inducción sobre la cantidad de aristas:
+
+Sea G= (V, E), |E(G)|= m
+
+$\sum_{v \in V(G)}d(v) = 2 |E(G)|$
+
+Queremos construirnos cualquier grafo de cualquier cantidad de nodos e ir agregando aristas para lograr esta propiedad.
+
+Demostración:
+
+Inducción sobre la cantidad de aristas
+
+Caso base:
+
+n = 0
+
+d(v) = 0 $\forall v\in V(G) \implies \sum_{v\in V(G)}d(v) = 0$ perfecto.
+
+paso inductivo:
+
+$|V(G)|= n \land |E(G)|= m$ 
+
+Sea $G' = (V(G), E(G) - \{e\})$
+
+$|E(G')| = n-1 \implies$ por HI vale que:
+
+$\sum_{v \in V(G')}d(v) = 2 |E(G')| = 2(n-1)$
+
+Si $v\in V(G) / v_1 \neq v \neq v_2 \implies d_G (v) = d_{G'} (v)$
+Si $v\in \{v_1, v_2\} \implies d_G (v) = d_{G'} (v) + 1$
+
+2(n-1) = **copiar de la diapo**
+
+# Notas
+
+- En general en la vida es común no tener muchas aristas.
+- En general en la vida es común tener pocas aristas y muchos nodos.
+- Lo más complejo en la demostración con grafos es conceptualizar al grafo en sí, o sea, poder darme cuenta que el caso que planteo es el más general posible.
