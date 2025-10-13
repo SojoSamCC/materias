@@ -105,7 +105,20 @@ El ordenamiento topologico es un ordenamiento de los nodos que respeta que los h
 
 Componente fuertemente conexa: son componentes tales que para todo nodos u v podemos ir de u a v y de v a u.
 
-Algoritmo Kosaraju.
+Algoritmo Kosaraju para encontrar componentes fuertemente conexas de un digrafo: https://youtu.be/QlGuaHT1lzA?si=BgRRH23qJjxmRtU7 y https://youtu.be/00fiBfxlzio?si=yVvv9qdknzgQqHXn
+
+Algoritmo de Tarjan para puentes: https://www.youtube.com/watch?v=qrAub5z8FeA y https://www.youtube.com/watch?v=Rhxs4k6DyMM 
+
+Algoritmo de Tarjan para puntos de articulación: https://www.youtube.com/watch?v=64KK9K4RpKE y https://www.youtube.com/watch?v=jFZsDDB0-vo
+
+## Notas sorbe ambos algoritmos:
+
+- **Algoritmo de Kosaraju para encontrar componentes fuertemente conexas en un digrafo**: El truco es aprovecharse de que si existe un ciclo entre los mismos nodos tanto en el grafo base como en el transpuesto, entonces esa es una componente fuertemente conexa. El algoritmo de Kosaraju usa un pila para llevar un orden conveniente de los nodos que fueron recorridos. Luego de transponer, si uno hace dfs y justo te encuentras con un ciclo y los nodos que recorriste seguían en la pila, entonces sucede que en el grafo base había un ciclo entre esos mismos nodos y que por lo tanto esa tiene que ser una componente fuertemente conexa.
+
+- **Algoritmo de Tarjan para puentes**: Tiene sentido que una arista u-v sea puente sii low[v] > dist[u] pues eso significa que ninguno de los hijos de v pudo llegar a algun ancestro de u, y por lo tanto la única conexión posible de v con el resto del grafo es a través de la arista u-v. Notar que si low[v] = dist[u] significa que existía un recorrido alterno para llegar de v a u, y por lo tanto la arista u-v no era puente.
+- **Algoritmo de Tarjan para puntos de articulación**: tiene sentido que un nodo u sea punto de articulación si low[v] >= dist[u] porque: 
+  - **si low[v] > dist[u]**: entonces eso significa que ningun hijo de v pudo llegar a algun ancestro de u por lo tanto la única manera de que el subgrafo enraizado en v se pueda conectar con los demás nodos es a través de alguna arista con el nodo u.
+  - **si low[v] = dist[u]**: entonces eso significa que existe algún recorrido dentro del subgrafo enraizado en v que tiene como inicio a un nodo que logra llegar a u como nodo, esto lo que provoca es algo así como que u sea el ancestro "más viejo" de todo el subgrafo enraizado en v, por lo tanto la única manera de que ese subgrafo se conecte con todos los demás nodos ese a través de alguna arista u-v.
 
 # Notas
 
