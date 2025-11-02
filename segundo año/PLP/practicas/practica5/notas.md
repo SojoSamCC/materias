@@ -52,3 +52,30 @@ Al hacerlo con ese alfarenombre llegamos a un occurs-check y la expresión no ti
 
 ![alt text](image-1.png)
 
+# VI) case z of left(x) ~> z [] right(y) ~> y
+
+1. Rectificación
+```
+case z of left(x) ~> z [] right(y) ~> y
+```
+2. Anotacición de tipos
+```
+R0 = {z: X1 + X2, x: X3, y: X4}
+M0 = case z of left(x) ~> z [] right(y) ~> y
+```
+3. Generación de restricciones
+```
+I({z:X1+X2,x:X3,y:X4}|case z of left(x)~>z[]right(y)~>y) = (X1+X2|X1+X2?=X3+X4, X1+X2?=X4)
+  I({z:X1+X2,x:X3,y:X4}|z) = (X1+X2 | {})
+  I({z:X1+X2,x:X3,y:X4}|z) = (X1+X2 | {})
+  I({z:X1+X2,x:X3,y:X4}|y) = (X4    | {}) 
+```
+4. Unificación
+```
+S = MGU(X1+X2?=X3+X4, X1+X2?=X4) =
+  {X1+X2 ?= X3+X4, X1+X2 ?= X4}     -> Swap ->  {X1+X2 ?= X3+X4, X4 ?= X1+X2}     -> Decompose    ->
+->{X1 ?= X3, X2 ?= X4, X4 ?= X1+X2} -> Swap ->  {X1 ?= X3, X4 ?= X2, X4 ?= X1+X2} -> Elim {X4:=X2}->
+->{X1 ?= X3, X2 ?= X1+X2}           -> Occurs-check -> falla
+```
+
+$\therefore$ No existe el juicio de tipado más general para el siguiente término.
