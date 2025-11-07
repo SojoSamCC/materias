@@ -39,7 +39,7 @@ def union(u, v):
 
         representantes[v] = u
         size[u] += size[v]
-# print(grafito_original)
+
 """
 Kruskal
 """
@@ -55,57 +55,66 @@ for w, u, v in aristas_ordenadas:
     else:
         aristas_fuera_del_agm[(u, v)] = w
 
-# print(grafito_kruskal)
-# print(aristas_fuera_del_agm)
 """
-Árbol único
+Necesito encontrar la arista máxima entre dos nodos para todo nodo en el grafo original.
 """
-# arista_maxima_entre_nodos = {u:{} for u in grafito_kruskal}
-# # def dfs(u, nodo_hasta, arista_maxima_actual):
-# #     if u == nodo_hasta:
-# #         return arista_maxima_actual
-# #     for w, v in grafito_kruskal[u]:
-# #         nueva_maxima = max(w, arista_maxima_actual)
-# #         nuevo_peso = dfs(v, nodo_hasta,  nueva_maxima)
-# #         arista_maxima_entre_nodos[u][nodo_hasta] = max(nueva_maxima, nuevo_peso)
-# ancestro = 4
-# def dfs(u, padre):
-#     for w, v in grafito_kruskal[u]:
-#         if v != padre:
-#             nueva_maxima = max(w, arista_maxima_entre_nodos[ancestro][u])
-#             # arista_maxima_entre_nodos[u][v] = nueva_maxima
-#             # input(f"\nu= {u}, v={v}, padre={padre}")
-#             arista_maxima_entre_nodos[ancestro][v] = nueva_maxima
-#             dfs(v, u)
 
-# arista_maxima_entre_nodos[ancestro][ancestro] = 0
-# dfs(ancestro, ancestro)
+"""
+La idea es hacer DFS desde cada nodo pero acordandome de los nodos por los que ya pasé.
+"""
 
-# pprint(arista_maxima_entre_nodos, indent=2)
-arista_maxima_entre_nodos = [0]*(n)
+arista_maxima_entre_nodos = {}
+arista_maxima_entre_nodos_u = [0]*n
 def dfs(u, padre):
     for w, v in grafito_kruskal[u]:
-        if v != padre:
-            nueva_maxima = max(w, arista_maxima_entre_nodos[u-1])
-            arista_maxima_entre_nodos[v-1] = nueva_maxima
+        if v != padre and (v, u) not in arista_maxima_entre_nodos:
+            nueva_maxima = max(w, arista_maxima_entre_nodos_u[u-1])
+            arista_maxima_entre_nodos_u[v-1] = nueva_maxima
+            arista_maxima_entre_nodos[(u, v)] =  arista_maxima_entre_nodos_u[v-1]
+            arista_maxima_entre_nodos[(v, u)] =  arista_maxima_entre_nodos_u[v-1]
+            # print()
+            # print(u, v)
+            # input(nueva_maxima)
             dfs(v, u)
 
-ancestro = 1
-dfs(ancestro, ancestro)
+for u in grafito_kruskal:
+    dfs(u, -1)
 
-# pprint(arista_maxima_entre_nodos, indent=2)
-# pprint([i+1 for i in range(n)], indent=2)
+pprint(arista_maxima_entre_nodos, indent=2)
+input()
+
+"""
+Me fijo si para cada arista fuera del AGM había una arista que: me conectara los mismos nodos en algun camino, y que tuviera el mismo peso en el grafo original.
+"""
 
 cant_aristas_fuera_del_agm = 0
 for arista in aristas_fuera_del_agm:
     u, v = arista
     peso = aristas_fuera_del_agm[arista]
-    max_entre_u_v = max(arista_maxima_entre_nodos[u-1], arista_maxima_entre_nodos[v-1]) 
-    if max_entre_u_v == peso:
+    arista_max_entre_u_v = max(arista_maxima_entre_nodos[u-1], arista_maxima_entre_nodos[v-1])
+    if arista_max_entre_u_v == peso:
         cant_aristas_fuera_del_agm +=1
+
+"""
+Por favor que sea esto
+"""
 print(cant_aristas_fuera_del_agm)
 
 # 8 10
+# 1 2 3
+# 1 3 2
+# 1 4 2
+# 2 5 4
+# 2 6 7
+# 2 7 5
+# 7 8 4
+# 6 7 4
+# 5 8 6
+# 3 5 3
+
+# 1 0
+# 1
+
 # 1 2 3
 # 1 3 2
 # 1 4 2
