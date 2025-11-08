@@ -1,4 +1,3 @@
-from pprint import pprint
 from heapq import heappush, heappop
 from collections import defaultdict
 
@@ -39,66 +38,42 @@ def union(u, v):
 
         representantes[v] = u
         size[u] += size[v]
+        return True # esto me sirve para saber si efectivamente hice union o no.
+    return False
 
 """
-Kruskal
+Kruskal modificado idea: acumular #aristas_AGM que no usé Y QUE COMPARTEN PESO CON UNA DEL AGM EN LA MISMA COMPONENETE CONEXA Y QUE UNEN CON OTRA COMPONENTE CONEXA Y QUE PODÍAN REEMPLAZAR A LA DEL AGM ORIGINAL.
 """
 
-peso_AGM = 0
-aristas_fuera_del_agm = {}
-grafito_kruskal = defaultdict(list)
-for w, u, v in aristas_ordenadas:
-    if find_set(u) != find_set(v):
-        union(u, v)
-        grafito_kruskal[u].append((w, v))
-        grafito_kruskal[v].append((w, u))
-    else:
-        aristas_fuera_del_agm[(u, v)] = w
+cant_agm_diferentes = 0
 
-"""
-Necesito encontrar la arista máxima entre dos nodos para todo nodo en el grafo original.
-"""
+i = 0
+while i < m:
+    arista = aristas_ordenadas[i]
+    w_original, _, _ = arista
+    aristas_del_mismo_peso = []
+    while i < m and aristas_ordenadas[i][0] == w_original: # veo qué aristas comparten el mismo peso.
+        aristas_del_mismo_peso.append(aristas_ordenadas[i])
+        i+=1
+    
+    aristas_que_unen_subarboles = []
+    for arista in aristas_del_mismo_peso: # me fijo si las aristas que comparten el mismo peso me podrían unir con otra componente conexa.
+        _, u, v = arista
+        if find_set(u) != find_set(v):
+            aristas_que_unen_subarboles.append(arista)
+            cant_agm_diferentes += 1 # si la arista me podía unir componentes conexas diferentes, me sirve.
+        # no me importa si comparten componente conexa porque más abajo me encargo de seleccionar a una en la union y solo acumular las que no usé.
 
-"""
-La idea es hacer DFS desde cada nodo pero acordandome de los nodos por los que ya pasé.
-"""
+    for _, u, v in aristas_que_unen_subarboles:
+        if union(u, v):
+            cant_agm_diferentes -=1 # si usé una arista para unir componentes conexas => no la cuento más.
 
-arista_maxima_entre_nodos = {}
-arista_maxima_entre_nodos_u = [0]*n
-def dfs(u, padre):
-    for w, v in grafito_kruskal[u]:
-        if v != padre and (v, u) not in arista_maxima_entre_nodos:
-            nueva_maxima = max(w, arista_maxima_entre_nodos_u[u-1])
-            arista_maxima_entre_nodos_u[v-1] = nueva_maxima
-            arista_maxima_entre_nodos[(u, v)] =  arista_maxima_entre_nodos_u[v-1]
-            arista_maxima_entre_nodos[(v, u)] =  arista_maxima_entre_nodos_u[v-1]
-            # print()
-            # print(u, v)
-            # input(nueva_maxima)
-            dfs(v, u)
-
-for u in grafito_kruskal:
-    dfs(u, -1)
-
-pprint(arista_maxima_entre_nodos, indent=2)
-input()
-
-"""
-Me fijo si para cada arista fuera del AGM había una arista que: me conectara los mismos nodos en algun camino, y que tuviera el mismo peso en el grafo original.
-"""
-
-cant_aristas_fuera_del_agm = 0
-for arista in aristas_fuera_del_agm:
-    u, v = arista
-    peso = aristas_fuera_del_agm[arista]
-    arista_max_entre_u_v = max(arista_maxima_entre_nodos[u-1], arista_maxima_entre_nodos[v-1])
-    if arista_max_entre_u_v == peso:
-        cant_aristas_fuera_del_agm +=1
+# hasta este punto solo deberían quedarme acumuladas la cantidad de aristas que me generaban nuevos AGMs y que no usé, que es equivalente a la cantidad de AGMs diferentes que habían!!!
 
 """
 Por favor que sea esto
 """
-print(cant_aristas_fuera_del_agm)
+print(cant_agm_diferentes)
 
 # 8 10
 # 1 2 3
