@@ -5,8 +5,10 @@
 
 ![alt text](image-2.png)
 
-3. Intercambio (∃/∀): ∃X.∀Y.P(X,Y ) =⇒ ∀Y.∃X.P(X,Y)
+3. 
 ```
+Intercambio (∃/∀): ∃X.∀Y.P(X,Y ) =⇒ ∀Y.∃X.P(X,Y)
+
 ____________________________ax  _____________________________________ax
 ∃X.∀Y.P(X,Y) |- ∃X.∀Y.P(X,Y)    ∃X.∀Y.P(X,Y), ∀Y.P(X,Y) |- ∀Y.P(X,Y)
 _____________________________________________________________________∃e
@@ -21,8 +23,9 @@ _____________________________________________________________________=>i
 |- ∃X.∀Y.P(X,Y) => ∀Y.∃X.P(X,Y)
 ```
 
-10. ∀X.(P(X) ∨ σ) ⇐⇒ (∀X.P(X))∨σ
+10. 
 ```
+∀X.(P(X) ∨ σ) ⇐⇒ (∀X.P(X))∨σ
                                     No sé
 ________________________________________________________________________________________
                                 ∀X.(P(X) ∨ σ), P(X), ¬σ |- ⊥
@@ -56,16 +59,19 @@ ________________________________________________________________________________
 |- (∀X.P(X)) ∨ σ => ∀X.(P(X) ∨ σ) 
 ```
 
-13. ∃X.(P(X) =⇒ ∀X.P(X))
+13. 
 
 ```
-??????????????????????????????????????
-______________________________________ax
-P(Z) |- P(X)
-______________________________________∀i
-P(Z) |- ∀X.P(X)
+∃X.(P(X) =⇒ ∀X.P(X))
+.
+.
+.
+______________________________________ni idea de qué hacer en este punto
+P(c) |- P(X)
+______________________________________∀i {X := X}
+P(c) |- ∀X.P(X)
 ______________________________________=>i
-|- P(Z) => ∀X.P(X)                        > se vale? El ∃X no liga a la X del ∀X?
+|- P(c) => ∀X.P(X)                        > es así el reemplazo?
 ______________________________________∃i
 |-∃X.(P(X) => ∀X.P(X))
 ```
@@ -84,7 +90,7 @@ ______________________________________________________________________∀i
 ______________________________________________________________________=>i
 |-(∀X.∀Y.R(X,f(Y ))) ⇒ (∀X.R(X,f(f(X))))
 ```
->>> Son válidos esos reemplazos?
+> Son válidos esos reemplazos?
 
 ---
 
@@ -94,7 +100,9 @@ Si la resta entre dos números a y b es negativa, entonces a < b.
 
 Para mi el enunciado es verdadero. 
 
-> No entiendo a qué se refieren con una interpretación para sigma, no debería de ser para L? EDIT: efectivamente, hay que darle una interpretación a L.
+> No entiendo a qué se refieren con una interpretación para sigma, no debería de ser para L? 
+>
+> EDIT: efectivamente, hay que darle una interpretación a L.
 
 No se me ocurre nada para reemplazar y que me de el valor de verdad contrario.
 
@@ -103,7 +111,9 @@ No se me ocurre nada para reemplazar y que me de el valor de verdad contrario.
 ![alt text](image-5.png)
 ![alt text](image-6.png)
 
-No entiendo cómo es eso de la asignación. EDIT: la asignación es una función que le da valores a cada variable libre. En resumen: le damos valores a las variables libres.
+> No entiendo cómo es eso de la asignación. 
+> 
+> EDIT: la asignación es una función que le da valores a cada variable libre. En resumen: le damos valores a las variables libres.
 
 1. 
     ```
@@ -120,14 +130,17 @@ No entiendo cómo es eso de la asignación. EDIT: la asignación es una función
     ```
 
 3. 
+    ```
     ¬P(f3(X1,X2),f3(X2,X3))
 
     A*B /= B*C
     A /= C
 
     Asignación = {X1 := c, X2 := f(c), X3 := f(f(c))}
+    ```
     
 5. 
+    ```
     ∀X1.(P(f3(X1,c),X1) ⇒ P(X1,X2))
 
     ¬P(f3(X1,c),X1) V P(X1, X2)
@@ -137,5 +150,6 @@ No entiendo cómo es eso de la asignación. EDIT: la asignación es una función
     0 /= X1 V X1 = X2 ~~~> mmmm
 
     Es imposible porque el único valor para que la fórmula valga es X1 := 0 y el para todo no sería válido entonces.
+    ```
 
 

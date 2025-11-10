@@ -41,7 +41,10 @@
 
 ![alt text](image-1.png)
 
-A qué se refiere que se deduzca (P ∧ Q) de la fórmula (¬P ⇒ Q)∧(P ⇒ Q)∧(¬P ⇒ ¬Q)? A qué ¬((¬P ⇒ Q)∧(P ⇒ Q)∧(¬P ⇒ ¬Q)) |- (P ∧ Q)???
+> A qué se refiere que se deduzca (P ∧ Q) de la fórmula (¬P ⇒ Q)∧(P ⇒ Q)∧(¬P ⇒ ¬Q)? A qué ¬((¬P ⇒ Q)∧(P ⇒ Q)∧(¬P ⇒ ¬Q)) |- (P ∧ Q)??? 
+> 
+> EDIT: esto se refiere a ((¬P ⇒ Q) ∧ (P ⇒ Q) ∧ (¬P ⇒ ¬Q)) => (P ∧ Q) 
+
 
 1, 2 y 5 son tautologías. Las demás o no son o no estoy seguro.
 
@@ -77,7 +80,7 @@ A qué se refiere que se deduzca (P ∧ Q) de la fórmula (¬P ⇒ Q)∧(P ⇒ Q
 
 ![alt text](image-2.png)
 
-Skip por ahora.
+> Skip por ahora. EDIT: ya vimos la clase de esto. Debo hacer este ejercicio pronto.
 
 ---
 
