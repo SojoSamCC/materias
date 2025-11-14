@@ -59,7 +59,7 @@ Me da
 
 # Bellman Ford
 
-- Camino mínimo de todos a todos.
+- Camino mínimo de uno a todos.
 - Acepta aristas de peso negativo siempre y cuando no forme un ciclo.
 - Se valen ciclos positivos.
 
