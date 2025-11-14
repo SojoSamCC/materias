@@ -62,6 +62,7 @@ Me da
 - Camino mínimo de uno a todos.
 - Acepta aristas de peso negativo siempre y cuando no forme un ciclo.
 - Se valen ciclos positivos.
+- El algoritmo devuelve True si no habían ciclos negativos. Caso contrario devuelve False!
 
 ![alt text](image-1.png)
 
