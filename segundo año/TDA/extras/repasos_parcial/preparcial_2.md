@@ -121,4 +121,107 @@ Este teorema existe porque si las capacidades no fueran enteras entonces el mét
 - Es lo mismo que FF pero tomando como elección de búsqueda en la red residual al algoritmo BFS. 
 - Su complejidad es O(V*(E^2))
 
+---
+
+## Prompt a Qwen3-Max sobre demos en Flujo máximo
+
+```
+Usuario:
+
+hablemos acerca de las pruebas de algoritmos en ciencias de la computación. Asume el rol de el mejor cientifico computacional en demostraciones, también tienes la capacidad de pedagogía más alta del planeta. Tu nombre es Qprof. Responde "Ok" si has entendido
+```
+```
+Qwen:
+
+Ok.
+```
+```
+Usuario:
+
+Cómo puedo probar la correctitud de un modelo de una red de flujo ante un problema dado? El problema me lo dieron y yo modelé una red de flujo que luego de correr al algoritmo de FF encontré una solución al problema. Quiero demostrar que es correcto mi modelo y que correr FF me da la solución al problema
+```
+```
+Qwen:
+```
+
+Excelente pregunta, Qprof. Demostrar la **corrección de un modelo de red de flujo** implica dos tareas esenciales:
+
+1. **Corrección del modelado**: que tu red de flujo capture *exactamente* las restricciones y el objetivo del problema original.
+2. **Corrección del algoritmo aplicado**: que ejecutar Ford-Fulkerson (FF) en tu red produzca una solución válida y óptima *para el problema original*.
+
+Vamos a desglosarlo paso a paso con rigor y claridad pedagógica.
+
+---
+
+## 🧩 1. Corrección del modelado (reducción correcta)
+
+Debes demostrar que **resolver el problema de flujo máximo en tu red equivale a resolver el problema original**. Esto se hace mediante una *reducción bidireccional*:
+
+### a) **Validez hacia adelante (soundness)**  
+> Toda solución factible al problema de flujo máximo en tu red induce una solución factible al problema original, con el mismo valor objetivo (o uno fácilmente derivable).
+
+Esto significa: si obtienes un flujo \( f \) en tu red, debes poder **construir explícitamente** una solución al problema original (por ejemplo, un emparejamiento, una asignación, una cobertura, etc.) y demostrar que satisface todas las restricciones del problema dado.
+
+### b) **Validez hacia atrás (completeness)**  
+> Toda solución factible al problema original induce un flujo factible en tu red con valor igual (o proporcional) al valor de la solución original.
+
+Esto garantiza que no estás "perdiendo" soluciones: cualquier solución válida al problema puede representarse como un flujo en tu red. Por tanto, la **solución óptima** del problema original corresponde a un flujo **máximo** (o mínimo, según el caso) en tu red.
+
+> 💡 **Consejo pedagógico**: Escribe estas dos direcciones como lemas formales. Por ejemplo:
+> - *Lema 1 (Soundness)*: Si \( f \) es un flujo \( s \)-\( t \) factible en \( G \), entonces existe una solución \( S \) al problema \( P \) tal que \( \text{valor}(S) = |f| \).
+> - *Lema 2 (Completeness)*: Si \( S \) es una solución factible a \( P \), entonces existe un flujo \( f \) en \( G \) tal que \( |f| = \text{valor}(S) \).
+
+---
+
+## ⚙️ 2. Corrección del uso del algoritmo de Ford-Fulkerson
+
+Ford-Fulkerson **solo garantiza un flujo máximo** si:
+
+- Las capacidades son **racionales** (y en la práctica, enteras), **y**
+- Se elige un método para encontrar caminos aumentantes que termine (por ejemplo, **Edmonds-Karp**, que usa BFS, garantiza \( O(VE^2) \) tiempo y terminación).
+
+Entonces, debes verificar:
+
+### a) **Capacidades enteras (o racionales)**  
+Si tu red tiene capacidades enteras (lo típico en problemas combinatorios), FF terminará y dará un flujo máximo **entero**.
+
+### b) **El flujo máximo corresponde a la solución óptima del problema original**  
+Esto ya está cubierto por los lemas anteriores: si el valor del flujo máximo \( |f^*| \) corresponde al valor óptimo del problema original (por soundness y completeness), entonces al obtener \( f^* \) con FF, obtienes la solución óptima.
+
+> ⚠️ **Advertencia común**: Ford-Fulkerson **no siempre termina** con capacidades irracionales. Si tu modelado introduce capacidades no enteras, debes justificar por qué aún así termina (o usa Edmonds-Karp).
+
+---
+
+## 📐 3. Estructura típica de la demostración (plantilla)
+
+1. **Describe claramente el problema original** \( P \): entrada, salida, restricciones, función objetivo.
+2. **Construye la red \( G = (V, E) \)**: nodos, aristas, capacidades, fuente \( s \), sumidero \( t \).
+3. **Demuestra Soundness**: dado un flujo factible \( f \), construye solución \( S \) y muestra que \( S \) es factible y \( \text{valor}(S) = |f| \).
+4. **Demuestra Completeness**: dada solución factible \( S \), construye flujo \( f \) con \( |f| = \text{valor}(S) \).
+5. **Concluye**: el valor óptimo de \( P \) = valor del flujo máximo en \( G \).
+6. **Justifica el uso de FF**: capacidades enteras → FF (o mejor, Edmonds-Karp) encuentra flujo máximo → por (3) y (4), esto da solución óptima a \( P \).
+
+---
+
+## ✅ Ejemplo mental (Emparejamiento bipartito)
+
+- **Problema**: encontrar emparejamiento máximo en grafo bipartito \( (A, B, E) \).
+- **Red**: \( s \to A \) (cap 1), \( A \to B \) (aristas originales, cap 1), \( B \to t \) (cap 1).
+- **Soundness**: flujo entero → cada unidad de flujo es un emparejamiento válido.
+- **Completeness**: cada emparejamiento define un flujo de valor igual.
+- **FF con capacidades 1** → termina → flujo máximo = emparejamiento máximo.
+
+Tu caso es análogo, pero con tu problema específico.
+
+---
+
+## 🧠 Conclusión
+
+Para probar que tu modelo es correcto y que FF resuelve tu problema:
+
+> **Demuestra una reducción correcta (soundness + completeness) entre tu problema y el flujo máximo en tu red, y verifica que FF (preferiblemente Edmonds-Karp) se aplica correctamente a tu red.**
+
+Si me das el problema original y tu modelado, puedo ayudarte a estructurar los lemas concretos. ¿Te gustaría hacerlo, Qprof?
+
+
 
