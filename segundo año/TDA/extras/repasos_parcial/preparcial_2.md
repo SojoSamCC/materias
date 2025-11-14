@@ -79,7 +79,7 @@ Me da
 
 ![alt text](image-3.png)
 ![alt text](image-4.png)
-> ese 1 que aparece ahpi es un error de interpretación del Kindle, en realidad es un $\infty$
+> ese 1 que aparece ahí es un error de interpretación del Kindle, en realidad es un $\infty$
 
 - Camino máximo en un DAG es multiplicar todas las aristas por -1 y correr el algoritmo de arriba ![alt text](image-5.png)
 
@@ -89,8 +89,9 @@ Me da
 ## Floyd-Warshall
 - La idea del algoritmo es: me fijo si hay un camino mínimo que pase por una arista diferente en la arista u->v para poder llegar hasta v. O sea, llegamos hasta u y queremos ver si hay algo mejor para llegar a v a partir de u sin usar la arista u->v.
 
-## No me acuerdo el otro.
-- Es mejor que Floyd en complejidad y me mantiene que hasta la k-ésima iteración ya tenemos el camino entre todos los primeros k nodos entre sí.
+## Dantzig
+- Tiene la misma complejidad temporal y espacial que Floyd-Warshall (O(n^3) y O(n^2), respectivamente), la diferencia está en que este es me asegura que hasta la k-ésima iteración ya conocemos el camino mínimp entre todos los primeros k nodos entre sí. 
+- La idea de usar a Dantzig es guardarme el estado de Dantzig hasta la última iteración que podamos y luego si tengo que agregar un nodo nuevo, entonces sigo corriendo Dantzig desde ese punto (pero ahora con el nuevo nodo) y listo, de esta manera obtengo de forma mucho más rápida (en complejidad temporal) todos los caminos mínimos desde entre ese nodo y todos los demás nodos. 
 
 ## Algoritmo de Johnson.
 - Me da el camino mínimo entre todos los pares en mejor complejidad que Floyd Warshall si tenemos un grafo ralo.
@@ -100,7 +101,7 @@ Me da
 
 ## Teorema de max flow min-cut
 
-[REPASAR]
+Idea: si tomamos un corte de la red flujo tal que su capacidad es mínima con respecto a todas las capacidades de todos los demás cortes posibles, entonces **no** es posible que llegue hasta el sumidero un flujo mayor al flujo que pase por ese corte. Se puede pensar como que ese corte de capacidad mínima lo que hace es restringirme el flujo máximo que puedo enviar desde s a t.
 
 ## Teorema de flujo entero
 
