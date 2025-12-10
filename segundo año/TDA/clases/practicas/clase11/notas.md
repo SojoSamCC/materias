@@ -93,7 +93,7 @@ Para esto queremos tener acotado lo más posible los valores de cada complejidad
 - La U es el flujo.
 
 # Moraleja del ejercicio:
-### A veces nos conviene esto ee repetir nodos para poder manejar por capas.
+### A veces nos conviene esto de repetir nodos para poder manejar por capas.
 
 
 # Ejercicio Titanic
@@ -186,11 +186,11 @@ El tema del orden es solo una interpretación que le damos al flujo, porque el f
 
 ![alt text](image-67.png)
 
-![alt text](image-68.png)
-
 # Notas:
 - Lo de duplicar al nodo es un buen truco si queremos agregarle una "capacidad a un nodo", en realidad es agregar capacidades y restricciones.
 - argumentar la conexión del grafo con el problema puede ser trivial pero es muy importante.
+
+![alt text](image-68.png)
 
 Necesitamos los sensores, la tierra y las ventanas de tiempo como nodos.
 
@@ -198,7 +198,7 @@ fuente a receptores, una cola por cada ventana de tiempo (Q1,1; Q1,2; Q2,1, ...)
 
 idea importante:
 
-nosotros queremos modelas las colas que vamos modelando en el tiempo, entonces bamos a tener que resgtringirlas por cada bentana tenemos que tener las colas en tiempo 1, 2, ,3 y 4 y tiene qiet haber iuna retroalimentación de en tiempo 1 me ghuardo el datro o lo mando a las dempas colas.
+nosotros queremos modelar las colas que vamos modelando en el tiempo, entonces vamos a tener que resgtringirlas por cada ventana tenemos que tener las colas en tiempo 1, 2, ,3 y 4 y tiene qiet haber iuna retroalimentación de en tiempo 1 me ghuardo el datro o lo mando a las dempas colas.
 
 Una unidad de flujo es un megabyte. 
 

@@ -1,6 +1,6 @@
 # Flujo máximo
 
-Hay muchos problemas que se resuelben con flujo máximo. Uno que está bueno es el de matchinf máximo.
+Hay muchos problemas que se resuelven con flujo máximo. Uno que está bueno es el de matchinf máximo.
 
 ![alt text](image.png)
 
